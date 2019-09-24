@@ -31,6 +31,10 @@ import { EditTenantDialogComponent } from './tenants/edit-tenant/edit-tenant-dia
 import { RolesComponent } from '@app/roles/roles.component';
 import { CreateRoleDialogComponent } from './roles/create-role/create-role-dialog.component';
 import { EditRoleDialogComponent } from './roles/edit-role/edit-role-dialog.component';
+// Cars
+import { CarsComponent } from '@app/cars/cars.component';
+import { CreateCarDialogComponent } from './cars/create-car/create-car-dialog.component';
+import { EditCarDialogComponent } from './cars/edit-car/edit-car-dialog.component';
 // users
 import { UsersComponent } from '@app/users/users.component';
 import { CreateUserDialogComponent } from '@app/users/create-user/create-user-dialog.component';
@@ -39,56 +43,64 @@ import { ChangePasswordComponent } from './users/change-password/change-password
 import { ResetPasswordDialogComponent } from './users/reset-password/reset-password.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HomeComponent,
-    AboutComponent,
-    TopBarComponent,
-    TopBarLanguageSwitchComponent,
-    SideBarUserAreaComponent,
-    SideBarNavComponent,
-    SideBarFooterComponent,
-    RightSideBarComponent,
-    // tenants
-    TenantsComponent,
-    CreateTenantDialogComponent,
-    EditTenantDialogComponent,
-    // roles
-    RolesComponent,
-    CreateRoleDialogComponent,
-    EditRoleDialogComponent,
-    // users
-    UsersComponent,
-    CreateUserDialogComponent,
-    EditUserDialogComponent,
-    ChangePasswordComponent,
-    ResetPasswordDialogComponent
-  ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    HttpClientJsonpModule,
-    ModalModule.forRoot(),
-    AbpModule,
-    AppRoutingModule,
-    ServiceProxyModule,
-    SharedModule,
-    NgxPaginationModule
-  ],
-  providers: [],
-  entryComponents: [
-    // tenants
-    CreateTenantDialogComponent,
-    EditTenantDialogComponent,
-    // roles
-    CreateRoleDialogComponent,
-    EditRoleDialogComponent,
-    // users
-    CreateUserDialogComponent,
-    EditUserDialogComponent,
-    ResetPasswordDialogComponent
-  ]
+    declarations: [
+        AppComponent,
+        HomeComponent,
+        AboutComponent,
+        TopBarComponent,
+        TopBarLanguageSwitchComponent,
+        SideBarUserAreaComponent,
+        SideBarNavComponent,
+        SideBarFooterComponent,
+        RightSideBarComponent,
+        // tenants
+        TenantsComponent,
+        CreateTenantDialogComponent,
+        EditTenantDialogComponent,
+        // roles
+        RolesComponent,
+        CreateRoleDialogComponent,
+        EditRoleDialogComponent,
+        // users
+        UsersComponent,
+        CreateUserDialogComponent,
+        EditUserDialogComponent,
+        ChangePasswordComponent,
+        ResetPasswordDialogComponent,
+
+        // cars
+        CarsComponent,
+        CreateCarDialogComponent,
+        EditCarDialogComponent,
+    ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        HttpClientModule,
+        HttpClientJsonpModule,
+        ModalModule.forRoot(),
+        AbpModule,
+        AppRoutingModule,
+        ServiceProxyModule,
+        SharedModule,
+        NgxPaginationModule
+    ],
+    providers: [],
+    entryComponents: [
+        // tenants
+        CreateTenantDialogComponent,
+        EditTenantDialogComponent,
+        // roles
+        CreateRoleDialogComponent,
+        EditRoleDialogComponent,
+        // users
+        CreateUserDialogComponent,
+        EditUserDialogComponent,
+        ResetPasswordDialogComponent,
+        // cars
+        CreateCarDialogComponent,
+        EditCarDialogComponent,
+    ]
 })
-export class AppModule {}
+export class AppModule { }
