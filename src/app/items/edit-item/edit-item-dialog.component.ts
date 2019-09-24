@@ -15,7 +15,7 @@ import {
 } from '@shared/service-proxies/service-proxies';
 
 @Component({
-  templateUrl: 'edit-car-dialog.component.html',
+  templateUrl: 'edit-item-dialog.component.html',
   styles: [
     `
       mat-form-field {
@@ -27,7 +27,7 @@ import {
     `
   ]
 })
-export class EditCarDialogComponent extends AppComponentBase
+export class EditItemDialogComponent extends AppComponentBase
   implements OnInit {
   saving = false;
   role: RoleDto = new RoleDto();
@@ -38,7 +38,7 @@ export class EditCarDialogComponent extends AppComponentBase
   constructor(
     injector: Injector,
     private _roleService: RoleServiceProxy,
-      private _dialogRef: MatDialogRef<EditCarDialogComponent>,
+      private _dialogRef: MatDialogRef<EditItemDialogComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) private _id: number
   ) {
     super(injector);

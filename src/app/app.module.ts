@@ -31,10 +31,10 @@ import { EditTenantDialogComponent } from './tenants/edit-tenant/edit-tenant-dia
 import { RolesComponent } from '@app/roles/roles.component';
 import { CreateRoleDialogComponent } from './roles/create-role/create-role-dialog.component';
 import { EditRoleDialogComponent } from './roles/edit-role/edit-role-dialog.component';
-// Cars
-import { CarsComponent } from '@app/cars/cars.component';
-import { CreateCarDialogComponent } from './cars/create-car/create-car-dialog.component';
-import { EditCarDialogComponent } from './cars/edit-car/edit-car-dialog.component';
+// items
+import { ItemsComponent } from '@app/items/items.component';
+import { CreateItemDialogComponent } from './items/create-item/create-item-dialog.component';
+import { EditItemDialogComponent } from './items/edit-item/edit-item-dialog.component';
 // users
 import { UsersComponent } from '@app/users/users.component';
 import { CreateUserDialogComponent } from '@app/users/create-user/create-user-dialog.component';
@@ -68,10 +68,10 @@ import { ResetPasswordDialogComponent } from './users/reset-password/reset-passw
         ChangePasswordComponent,
         ResetPasswordDialogComponent,
 
-        // cars
-        CarsComponent,
-        CreateCarDialogComponent,
-        EditCarDialogComponent,
+        // items
+        ItemsComponent,
+        CreateItemDialogComponent,
+        EditItemDialogComponent,
     ],
     imports: [
         CommonModule,
@@ -98,9 +98,9 @@ import { ResetPasswordDialogComponent } from './users/reset-password/reset-passw
         CreateUserDialogComponent,
         EditUserDialogComponent,
         ResetPasswordDialogComponent,
-        // cars
-        CreateCarDialogComponent,
-        EditCarDialogComponent,
+        // items
+        CreateItemDialogComponent,
+        EditItemDialogComponent,
     ]
 })
 export class AppModule { }

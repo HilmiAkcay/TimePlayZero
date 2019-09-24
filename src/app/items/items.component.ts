@@ -11,15 +11,15 @@ import {
     RoleDto,
     PagedResultDtoOfRoleDto
 } from '@shared/service-proxies/service-proxies';
-import { CreateCarDialogComponent } from './create-car/create-car-dialog.component';
-import { EditCarDialogComponent } from './edit-car/edit-car-dialog.component';
+import { CreateItemDialogComponent } from './create-item/create-item-dialog.component';
+import { EditItemDialogComponent } from './edit-item/edit-item-dialog.component';
 
 class PagedRolesRequestDto extends PagedRequestDto {
     keyword: string;
 }
 
 @Component({
-    templateUrl: './cars.component.html',
+    templateUrl: './items.component.html',
     animations: [appModuleAnimation()],
     styles: [
         `
@@ -29,7 +29,7 @@ class PagedRolesRequestDto extends PagedRequestDto {
         `
     ]
 })
-export class CarsComponent extends PagedListingComponentBase<RoleDto> {
+export class ItemsComponent extends PagedListingComponentBase<RoleDto> {
     roles: RoleDto[] = [];
 
     keyword = '';
@@ -93,9 +93,9 @@ export class CarsComponent extends PagedListingComponentBase<RoleDto> {
     showCreateOrEditRoleDialog(id?: number): void {
         let createOrEditRoleDialog;
         if (id === undefined || id <= 0) {
-            createOrEditRoleDialog = this._dialog.open(CreateCarDialogComponent);
+            createOrEditRoleDialog = this._dialog.open(CreateItemDialogComponent);
         } else {
-            createOrEditRoleDialog = this._dialog.open(EditCarDialogComponent, {
+            createOrEditRoleDialog = this._dialog.open(EditItemDialogComponent, {
                 data: id
             });
         }
