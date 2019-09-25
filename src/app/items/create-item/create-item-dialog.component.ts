@@ -4,11 +4,11 @@ import { finalize } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { AppComponentBase } from '@shared/app-component-base';
 import {
-  RoleServiceProxy,
-  RoleDto,
+  ItemServiceProxy,
+  ItemDto,
   ListResultDtoOfPermissionDto,
   PermissionDto,
-  CreateRoleDto
+  CreateItemDto
 } from '@shared/service-proxies/service-proxies';
 
 @Component({
@@ -26,8 +26,8 @@ import {
 })
 export class CreateItemDialogComponent extends AppComponentBase
   implements OnInit {
-  saving = false;
-  role: RoleDto = new RoleDto();
+    saving = false;
+    item: ItemDto = new ItemDto();
   permissions: PermissionDto[] = [];
   grantedPermissionNames: string[] = [];
   checkedPermissionsMap: { [key: string]: boolean } = {};
@@ -35,19 +35,19 @@ export class CreateItemDialogComponent extends AppComponentBase
 
   constructor(
     injector: Injector,
-    private _roleService: RoleServiceProxy,
+    private _itemService: ItemServiceProxy,
       private _dialogRef: MatDialogRef<CreateItemDialogComponent>
   ) {
     super(injector);
   }
 
   ngOnInit(): void {
-    this._roleService
-      .getAllPermissions()
-      .subscribe((result: ListResultDtoOfPermissionDto) => {
-        this.permissions = result.items;
-        this.setInitialPermissionsStatus();
-      });
+    //this._itemService
+    //  .getAllPermissions()
+    //  .subscribe((result: ListResultDtoOfPermissionDto) => {
+    //    this.permissions = result.items;
+    //    this.setInitialPermissionsStatus();
+    //  });
   }
 
   setInitialPermissionsStatus(): void {
@@ -81,13 +81,13 @@ export class CreateItemDialogComponent extends AppComponentBase
   save(): void {
     this.saving = true;
 
-    this.role.grantedPermissions = this.getCheckedPermissions();
+    //this.role.grantedPermissions = this.getCheckedPermissions();
 
-    const role_ = new CreateRoleDto();
-    role_.init(this.role);
+      const item_ = new CreateItemDto();
+      item_.init(this.item);
 
-    this._roleService
-      .create(role_)
+    this._itemService
+      .create(item_)
       .pipe(
         finalize(() => {
           this.saving = false;

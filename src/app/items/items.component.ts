@@ -7,14 +7,15 @@ import {
     PagedRequestDto
 } from '@shared/paged-listing-component-base';
 import {
-    RoleServiceProxy,
-    RoleDto,
-    PagedResultDtoOfRoleDto
+    ItemServiceProxy,
+    ItemDto,
+    PagedResultDtoOfItemDto
+   
 } from '@shared/service-proxies/service-proxies';
 import { CreateItemDialogComponent } from './create-item/create-item-dialog.component';
 import { EditItemDialogComponent } from './edit-item/edit-item-dialog.component';
 
-class PagedRolesRequestDto extends PagedRequestDto {
+class PagedItemsRequestDto extends PagedRequestDto {
     keyword: string;
 }
 
@@ -29,21 +30,21 @@ class PagedRolesRequestDto extends PagedRequestDto {
         `
     ]
 })
-export class ItemsComponent extends PagedListingComponentBase<RoleDto> {
-    roles: RoleDto[] = [];
+export class ItemsComponent extends PagedListingComponentBase<ItemDto> {
+    items: ItemDto[] = [];
 
     keyword = '';
 
     constructor(
         injector: Injector,
-        private _rolesService: RoleServiceProxy,
+        private _rolesService: ItemServiceProxy,
         private _dialog: MatDialog
     ) {
         super(injector);
     }
 
     list(
-        request: PagedRolesRequestDto,
+        request: PagedItemsRequestDto,
         pageNumber: number,
         finishedCallback: Function
     ): void {
@@ -57,15 +58,15 @@ export class ItemsComponent extends PagedListingComponentBase<RoleDto> {
                     finishedCallback();
                 })
             )
-            .subscribe((result: PagedResultDtoOfRoleDto) => {
-                this.roles = result.items;
+            .subscribe((result: PagedResultDtoOfItemDto) => {
+                this.items = result.items;
                 this.showPaging(result, pageNumber);
             });
     }
 
-    delete(role: RoleDto): void {
+    delete(role: ItemDto): void {
         abp.message.confirm(
-            this.l('RoleDeleteWarningMessage', role.displayName),
+            this.l('RoleDeleteWarningMessage', role.name),
             (result: boolean) => {
                 if (result) {
                     this._rolesService
@@ -82,25 +83,25 @@ export class ItemsComponent extends PagedListingComponentBase<RoleDto> {
         );
     }
 
-    createRole(): void {
-        this.showCreateOrEditRoleDialog();
+    createItem(): void {
+        this.showCreateOrEditItemDialog();
     }
 
-    editRole(role: RoleDto): void {
-        this.showCreateOrEditRoleDialog(role.id);
+    editItem(role: ItemDto): void {
+        this.showCreateOrEditItemDialog(role.id);
     }
 
-    showCreateOrEditRoleDialog(id?: number): void {
-        let createOrEditRoleDialog;
+    showCreateOrEditItemDialog(id?: number): void {
+        let createOrEditItemDialog;
         if (id === undefined || id <= 0) {
-            createOrEditRoleDialog = this._dialog.open(CreateItemDialogComponent);
+            createOrEditItemDialog = this._dialog.open(CreateItemDialogComponent);
         } else {
-            createOrEditRoleDialog = this._dialog.open(EditItemDialogComponent, {
+            createOrEditItemDialog = this._dialog.open(EditItemDialogComponent, {
                 data: id
             });
         }
 
-        createOrEditRoleDialog.afterClosed().subscribe(result => {
+        createOrEditItemDialog.afterClosed().subscribe(result => {
             if (result) {
                 this.refresh();
             }

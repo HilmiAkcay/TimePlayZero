@@ -1,63 +1,52 @@
-<form autocomplete="off" #createRoleForm="ngForm" (ngSubmit)="save()">
-  <h1 mat-dialog-title>{{ "CreateNewRole" | localize }}</h1>
+<form autocomplete="off" #createItemForm="ngForm" (ngSubmit)="save()">
+  <h1 mat-dialog-title>{{ "CreateNewItem" | localize }}</h1>
   <mat-dialog-content style="width:600px;height:300px;">
-    <mat-tab-group>
-      <mat-tab [label]="'Details' | localize">
-        <br />
-        <div class="row-fluid">
+      <div class="row-fluid">
           <div class="col-md-12">
-            <mat-form-field>
-              <input
-                matInput
-                name="Name"
-                [placeholder]="'Name' | localize"
-                [(ngModel)]="role.name"
-                required
-                minlength="2"
-                maxlength="32"
-              />
-            </mat-form-field>
-            <mat-form-field>
-              <input
-                matInput
-                name="DisplayName"
-                [placeholder]="'DisplayName' | localize"
-                [(ngModel)]="role.displayName"
-                required
-                minlength="2"
-                maxlength="32"
-              />
-            </mat-form-field>
-            <mat-form-field>
-              <textarea
-                matInput
-                name="Description"
-                [placeholder]="'RoleDescription' | localize"
-                [(ngModel)]="role.description"
-              ></textarea>
-            </mat-form-field>
+              <mat-form-field>
+                  <input matInput
+                         name="Code"
+                         [placeholder]="'Code' | localize"
+                         [(ngModel)]="item.code"
+                         required
+                         minlength="2"
+                         maxlength="32" />
+              </mat-form-field>
+              <mat-form-field>
+                  <input matInput
+                         name="Name"
+                         [placeholder]="'Name' | localize"
+                         [(ngModel)]="item.name"
+                         required
+                         minlength="2"
+                         maxlength="32" />
+              </mat-form-field>
+              <mat-form-field>
+                  <input matInput
+                         name="Price"
+                         [placeholder]="'Price' | localize"
+                         [(ngModel)]="item.price"
+                         required
+                         minlength="2"
+                         maxlength="32" />
+              </mat-form-field>
+              <mat-form-field>
+                  <input matInput
+                         name="Price"
+                         [placeholder]="'Type' | localize"
+                         [(ngModel)]="item.type"
+                         required
+                         minlength="2"
+                         maxlength="32" />
+              </mat-form-field>
+              <!--<mat-form-field>
+        <textarea matInput
+                  name="Description"
+                  [placeholder]="'RoleDescription' | localize"
+                  [(ngModel)]="role.description"></textarea>
+    </mat-form-field>-->
           </div>
-        </div>
-      </mat-tab>
-      <mat-tab [label]="'Permissions' | localize">
-        <br />
-        <div class="row-fluid">
-          <ng-template ngFor let-permission [ngForOf]="permissions">
-            <div class="col-md-6">
-              <div class="checkbox-wrapper">
-                <mat-checkbox
-                  [checked]="isPermissionChecked(permission.name)"
-                  [disabled]="role.isStatic"
-                  (change)="onPermissionChange(permission, $event)"
-                >
-                  {{ permission.displayName }}
-                </mat-checkbox>
-              </div>
-            </div>
-          </ng-template>
-        </div>
-      </mat-tab>
-    </mat-tab-group>
+      </div>
   </mat-dialog-content>
   <div mat-dialog-actions align="end">
     <button mat-button type="button" [disabled]="saving" (click)="close(false)">
@@ -68,7 +57,7 @@
       type="submit"
       flex="15"
       color="primary"
-      [disabled]="!createRoleForm.form.valid || saving"
+      [disabled]="!createItemForm.form.valid || saving"
     >
       {{ "Save" | localize }}
     </button>
