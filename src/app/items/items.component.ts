@@ -66,7 +66,7 @@ export class ItemsComponent extends PagedListingComponentBase<ItemDto> {
 
     delete(role: ItemDto): void {
         abp.message.confirm(
-            this.l('RoleDeleteWarningMessage', role.name),
+            this.l('DeleteWarningMessage', role.name),
             (result: boolean) => {
                 if (result) {
                     this._rolesService
