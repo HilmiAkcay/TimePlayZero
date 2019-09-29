@@ -27,17 +27,17 @@
                          [placeholder]="'Price' | localize"
                          [(ngModel)]="item.price"
                          required
-                         minlength="2"
-                         maxlength="32" />
+                         type="number"
+                         minlength="1"
+                         maxlength="10" />
               </mat-form-field>
               <mat-form-field>
-                  <input matInput
-                         name="Price"
-                         [placeholder]="'Type' | localize"
-                         [(ngModel)]="item.type"
-                         required
-                         minlength="2"
-                         maxlength="32" />
+                  <mat-select name="option" required  [placeholder]="'Type' | localize"
+                               [(ngModel)]="item.type">
+                      <mat-option *ngFor="let x of itemTypes" [value]="x.id">
+                          {{x.value}}
+                      </mat-option>
+                  </mat-select>
               </mat-form-field>
               <!--<mat-form-field>
         <textarea matInput
