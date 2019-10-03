@@ -203,7 +203,299 @@ export class ConfigurationServiceProxy {
     }
 }
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
+export class CustomerGroupServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    create(input: CreateCustomerGroupDto | null | undefined): Observable<CustomerGroupDto> {
+        let url_ = this.baseUrl + "/api/services/app/CustomerGroup/Create";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreate(<any>response_);
+                } catch (e) {
+                    return <Observable<CustomerGroupDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CustomerGroupDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreate(response: HttpResponseBase): Observable<CustomerGroupDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? CustomerGroupDto.fromJS(resultData200) : new CustomerGroupDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CustomerGroupDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    get(id: number | null | undefined): Observable<CustomerGroupDto> {
+        let url_ = this.baseUrl + "/api/services/app/CustomerGroup/Get?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGet(<any>response_);
+                } catch (e) {
+                    return <Observable<CustomerGroupDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CustomerGroupDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGet(response: HttpResponseBase): Observable<CustomerGroupDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? CustomerGroupDto.fromJS(resultData200) : new CustomerGroupDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CustomerGroupDto>(<any>null);
+    }
+
+    /**
+     * @param keyword (optional) 
+     * @param skipCount (optional) 
+     * @param maxResultCount (optional) 
+     * @return Success
+     */
+    getAll(keyword: string | null | undefined, skipCount: number | null | undefined, maxResultCount: number | null | undefined): Observable<PagedResultDtoOfCustomerGroupDto> {
+        let url_ = this.baseUrl + "/api/services/app/CustomerGroup/GetAll?";
+        if (keyword !== undefined)
+            url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&"; 
+        if (skipCount !== undefined)
+            url_ += "SkipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (maxResultCount !== undefined)
+            url_ += "MaxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfCustomerGroupDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfCustomerGroupDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAll(response: HttpResponseBase): Observable<PagedResultDtoOfCustomerGroupDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfCustomerGroupDto.fromJS(resultData200) : new PagedResultDtoOfCustomerGroupDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfCustomerGroupDto>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
+    update(input: CustomerGroupDto | null | undefined): Observable<CustomerGroupDto> {
+        let url_ = this.baseUrl + "/api/services/app/CustomerGroup/Update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<CustomerGroupDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CustomerGroupDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<CustomerGroupDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? CustomerGroupDto.fromJS(resultData200) : new CustomerGroupDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CustomerGroupDto>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/CustomerGroup/Delete?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
 export class ItemServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -2216,6 +2508,159 @@ export interface IChangeUiThemeInput {
     theme: string;
 }
 
+export class CreateCustomerGroupDto implements ICreateCustomerGroupDto {
+    name: string | undefined;
+
+    constructor(data?: ICreateCustomerGroupDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.name = data["name"];
+        }
+    }
+
+    static fromJS(data: any): CreateCustomerGroupDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateCustomerGroupDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        return data; 
+    }
+
+    clone(): CreateCustomerGroupDto {
+        const json = this.toJSON();
+        let result = new CreateCustomerGroupDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateCustomerGroupDto {
+    name: string | undefined;
+}
+
+export class CustomerGroupDto implements ICustomerGroupDto {
+    name: string | undefined;
+    creationTime: moment.Moment | undefined;
+    isDeleted: boolean | undefined;
+    id: number | undefined;
+
+    constructor(data?: ICustomerGroupDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.name = data["name"];
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.isDeleted = data["isDeleted"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): CustomerGroupDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustomerGroupDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["isDeleted"] = this.isDeleted;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): CustomerGroupDto {
+        const json = this.toJSON();
+        let result = new CustomerGroupDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICustomerGroupDto {
+    name: string | undefined;
+    creationTime: moment.Moment | undefined;
+    isDeleted: boolean | undefined;
+    id: number | undefined;
+}
+
+export class PagedResultDtoOfCustomerGroupDto implements IPagedResultDtoOfCustomerGroupDto {
+    totalCount: number | undefined;
+    items: CustomerGroupDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfCustomerGroupDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [];
+                for (let item of data["items"])
+                    this.items.push(CustomerGroupDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfCustomerGroupDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfCustomerGroupDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): PagedResultDtoOfCustomerGroupDto {
+        const json = this.toJSON();
+        let result = new PagedResultDtoOfCustomerGroupDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPagedResultDtoOfCustomerGroupDto {
+    totalCount: number | undefined;
+    items: CustomerGroupDto[] | undefined;
+}
+
 export class CreateItemDto implements ICreateItemDto {
     code: string | undefined;
     name: string | undefined;
@@ -2275,8 +2720,10 @@ export class ItemDto implements IItemDto {
     code: string | undefined;
     name: string | undefined;
     type: number | undefined;
+    typeName: string | undefined;
     price: number | undefined;
     creationTime: moment.Moment | undefined;
+    isDeleted: boolean | undefined;
     id: number | undefined;
 
     constructor(data?: IItemDto) {
@@ -2293,8 +2740,10 @@ export class ItemDto implements IItemDto {
             this.code = data["code"];
             this.name = data["name"];
             this.type = data["type"];
+            this.typeName = data["typeName"];
             this.price = data["price"];
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.isDeleted = data["isDeleted"];
             this.id = data["id"];
         }
     }
@@ -2311,8 +2760,10 @@ export class ItemDto implements IItemDto {
         data["code"] = this.code;
         data["name"] = this.name;
         data["type"] = this.type;
+        data["typeName"] = this.typeName;
         data["price"] = this.price;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["isDeleted"] = this.isDeleted;
         data["id"] = this.id;
         return data; 
     }
@@ -2329,8 +2780,10 @@ export interface IItemDto {
     code: string | undefined;
     name: string | undefined;
     type: number | undefined;
+    typeName: string | undefined;
     price: number | undefined;
     creationTime: moment.Moment | undefined;
+    isDeleted: boolean | undefined;
     id: number | undefined;
 }
 
