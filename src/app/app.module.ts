@@ -42,11 +42,15 @@ import { EditUserDialogComponent } from '@app/users/edit-user/edit-user-dialog.c
 import { ChangePasswordComponent } from './users/change-password/change-password.component';
 import { ResetPasswordDialogComponent } from './users/reset-password/reset-password.component';
 
-
+//CustomerGroup
 import { CustomerGroupsComponent } from './customerGroups/customerGroups.component';
-
 import { CreateCustomerGroupDialogComponent } from './customerGroups/create-customerGroup/create-customerGroup-dialog.component';
 import { EditCustomerGroupDialogComponent } from './customerGroups/edit-customerGroup/edit-customerGroup-dialog.component';
+
+//Customer
+import { CustomersComponent } from './customers/customers.component';
+import { CreateCustomerDialogComponent } from './customers/create-customer/create-customer-dialog.component';
+import { EditCustomerDialogComponent } from './customers/edit-customer/edit-customer-dialog.component';
 
 @NgModule({
     declarations: [
@@ -83,6 +87,11 @@ import { EditCustomerGroupDialogComponent } from './customerGroups/edit-customer
         CustomerGroupsComponent,
         CreateCustomerGroupDialogComponent,
         EditCustomerGroupDialogComponent,
+
+        //Customers
+        CustomersComponent,
+        CreateCustomerDialogComponent,
+        EditCustomerDialogComponent,
     ],
     imports: [
         CommonModule,
@@ -116,6 +125,10 @@ import { EditCustomerGroupDialogComponent } from './customerGroups/edit-customer
         //customerGroups
         CreateCustomerGroupDialogComponent,
         EditCustomerGroupDialogComponent,
+
+        //customers
+        CreateCustomerDialogComponent,
+        EditCustomerDialogComponent,
     ]
 })
 export class AppModule { }

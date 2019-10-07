@@ -18,7 +18,8 @@ export class SideBarNavComponent extends AppComponentBase {
         new MenuItem(this.l('About'), '', 'info', '/app/about'),
         new MenuItem(this.l('Items'), 'Pages.Items', 'directions_car', '/app/items'),
         new MenuItem(this.l('Customers'), '', 'business', '', [
-            new MenuItem(this.l('CustomerGroups'), 'Pages.CustomerGroups', 'directions_car', '/app/customerGroups'),
+            new MenuItem(this.l('CustomerGroups'), 'Pages.CustomerGroups', '', '/app/customerGroups'),
+            new MenuItem(this.l('Customers'), 'Pages.Customers', '', '/app/customers'),
         ]),
 
         new MenuItem(this.l('MultiLevelMenu'), '', 'menu', '', [
