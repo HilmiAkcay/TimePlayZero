@@ -1,73 +1,71 @@
 <form autocomplete="off" #editRoleForm="ngForm" (ngSubmit)="save()">
-  <h1 mat-dialog-title>{{ "EditCustomer" | localize }}</h1>
-  <mat-dialog-content style="width:600px;height:340px;">
-      <div class="row-fluid">
-          <div class="col-md-12">
-              <mat-form-field>
-                  <input matInput
-                         name="FirstName"
-                         [placeholder]="'FirstName' | localize"
-                         [(ngModel)]="customer.firstName"
-                         required
-                         minlength="2"
-                         maxlength="32" />
-              </mat-form-field>
-              <mat-form-field>
-                  <input matInput
-                         name="LastName"
-                         [placeholder]="'LastName' | localize"
-                         [(ngModel)]="customer.lastName"
-                         required
-                         minlength="2"
-                         maxlength="32" />
-              </mat-form-field>
-              <mat-form-field>
-                  <input matInput name="BirthDate" [matDatepicker]="picker1" [placeholder]="'BirthDate'|localize" [(ngModel)]="customer.birthDate">
-                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                  <mat-datepicker #picker1></mat-datepicker>
-              </mat-form-field>
-              <mat-form-field>
-                  <input matInput
-                         name="PhoneNumber"
-                         [placeholder]="'PhoneNumber' | localize"
-                         [(ngModel)]="customer.phoneNumber"
-                         required
-                         minlength="2"
-                         maxlength="32" />
-              </mat-form-field>
+    <h1 mat-dialog-title>{{ "EditCustomer" | localize }}</h1>
+    <mat-dialog-content style="width:600px;height:340px;">
+        <div class="row-fluid">
+            <div class="col-md-12">
+                <mat-form-field>
+                    <input matInput
+                           name="FirstName"
+                           [placeholder]="'FirstName' | localize"
+                           [(ngModel)]="customer.firstName"
+                           required
+                           minlength="2"
+                           maxlength="32" />
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput
+                           name="LastName"
+                           [placeholder]="'LastName' | localize"
+                           [(ngModel)]="customer.lastName"
+                           required
+                           minlength="2"
+                           maxlength="32" />
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput name="BirthDate" [matDatepicker]="picker1" [placeholder]="'BirthDate'|localize" [(ngModel)]="customer.birthDate" required>
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput
+                           name="PhoneNumber"
+                           [placeholder]="'PhoneNumber' | localize"
+                           [(ngModel)]="customer.phoneNumber"
+                           required
+                           minlength="2"
+                           maxlength="32" />
+                </mat-form-field>
 
-              <mat-form-field>
-                  <input matInput
-                         name="Email"
-                         [placeholder]="'Email' | localize"
-                         [(ngModel)]="customer.mailAddress"
-                         required
-                         minlength="2"
-                         maxlength="32" />
-              </mat-form-field>
-              <mat-form-field>
-                  <mat-select name="option" required [placeholder]="'CustomerGroup' | localize"
-                              [(ngModel)]="customer.customerGroupId">
-                      <mat-option *ngFor="let x of customerGroups" [value]="x.id">
-                          {{x.name}}
-                      </mat-option>
-                  </mat-select>
-              </mat-form-field>
-          </div>
-      </div>
-  </mat-dialog-content>
-  <div mat-dialog-actions align="end">
-    <button mat-button type="button" [disabled]="saving" (click)="close(false)">
-      {{ "Cancel" | localize }}
-    </button>
-    <button
-      mat-flat-button
-      type="submit"
-      flex="15"
-      color="primary"
-      [disabled]="!editRoleForm.form.valid || saving"
-    >
-      {{ "Save" | localize }}
-    </button>
-  </div>
+                <mat-form-field>
+                    <input matInput
+                           name="Email"
+                           [placeholder]="'Email' | localize"
+                           [(ngModel)]="customer.mailAddress"
+                           required
+                           minlength="2"
+                           maxlength="32" />
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-select name="option" required [placeholder]="'CustomerGroup' | localize"
+                                [(ngModel)]="customer.customerGroupId">
+                        <mat-option *ngFor="let x of customerGroups" [value]="x.id">
+                            {{x.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <div mat-dialog-actions align="end">
+        <button mat-button type="button" [disabled]="saving" (click)="close(false)">
+            {{ "Cancel" | localize }}
+        </button>
+        <button mat-flat-button
+                type="submit"
+                flex="15"
+                color="primary"
+                [disabled]="!editRoleForm.form.valid || saving">
+            {{ "Save" | localize }}
+        </button>
+    </div>
 </form>

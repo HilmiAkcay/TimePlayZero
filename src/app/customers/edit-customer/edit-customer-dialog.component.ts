@@ -16,6 +16,7 @@ import {
 } from '@shared/service-proxies/service-proxies';
 
 
+
 export interface ItemType {
     id: number;
     value: string;
@@ -61,7 +62,7 @@ export class EditCustomerDialogComponent extends AppComponentBase
             .get(this._id)
             .subscribe((result: CustomerDto) => {
                 this.customer.init(result);
-
+               
                 //_.map(result.permissions, item => {
                 //  const permission = new PermissionDto();
                 //  permission.init(item);

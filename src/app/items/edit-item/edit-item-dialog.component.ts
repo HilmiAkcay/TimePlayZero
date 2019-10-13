@@ -42,6 +42,7 @@ export class EditItemDialogComponent extends AppComponentBase
     itemTypes: ItemType[] = [
         { id: 0, value: 'Standard' },
         { id: 1, value: 'Time Based' },
+        { id: 2, value: 'Period Based' },
     ];
 
     constructor(

@@ -1,65 +1,143 @@
 <form autocomplete="off" #createItemForm="ngForm" (ngSubmit)="save()">
-  <h1 mat-dialog-title>{{ "CreateNewItem" | localize }}</h1>
-  <mat-dialog-content style="width:600px;height:300px;">
-      <div class="row-fluid">
-          <div class="col-md-12">
-              <mat-form-field>
-                  <input matInput
-                         name="Code"
-                         [placeholder]="'Code' | localize"
-                         [(ngModel)]="item.code"
-                         required
-                         minlength="2"
-                         maxlength="32" />
-              </mat-form-field>
-              <mat-form-field>
-                  <input matInput
-                         name="Name"
-                         [placeholder]="'Name' | localize"
-                         [(ngModel)]="item.name"
-                         required
-                         minlength="2"
-                         maxlength="32" />
-              </mat-form-field>
-              <mat-form-field>
-                  <input matInput
-                         name="Price"
-                         [placeholder]="'Price' | localize"
-                         [(ngModel)]="item.price"
-                         required
-                         type="number"
-                         minlength="1"
-                         maxlength="10" />
-              </mat-form-field>
-              <mat-form-field>
-                  <mat-select name="option" required  [placeholder]="'Type' | localize"
-                               [(ngModel)]="item.type">
-                      <mat-option *ngFor="let x of itemTypes" [value]="x.id">
-                          {{x.value}}
-                      </mat-option>
-                  </mat-select>
-              </mat-form-field>
-              <!--<mat-form-field>
-        <textarea matInput
-                  name="Description"
-                  [placeholder]="'RoleDescription' | localize"
-                  [(ngModel)]="role.description"></textarea>
-    </mat-form-field>-->
-          </div>
-      </div>
-  </mat-dialog-content>
-  <div mat-dialog-actions align="end">
-    <button mat-button type="button" [disabled]="saving" (click)="close(false)">
-      {{ "Cancel" | localize }}
-    </button>
-    <button
-      mat-flat-button
-      type="submit"
-      flex="15"
-      color="primary"
-      [disabled]="!createItemForm.form.valid || saving"
-    >
-      {{ "Save" | localize }}
-    </button>
-  </div>
+    <!--<h1 mat-dialog-title>{{ "CreateNewItem" | localize }}</h1>-->
+    <mat-dialog-content style="width:600px;height:300px;">
+        <mat-tab-group>
+            <mat-tab [label]="'CreateNewItem' | localize">
+                <div class="row-fluid">
+                    <div class="col-md-12">
+                        <mat-form-field>
+                            <input matInput
+                                   name="Code"
+                                   [placeholder]="'Code' | localize"
+                                   [(ngModel)]="item.code"
+                                   required
+                                   minlength="2"
+                                   maxlength="32" />
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input matInput
+                                   name="Name"
+                                   [placeholder]="'Name' | localize"
+                                   [(ngModel)]="item.name"
+                                   required
+                                   minlength="2"
+                                   maxlength="32" />
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input matInput
+                                   name="Price"
+                                   [placeholder]="'Price' | localize"
+                                   [(ngModel)]="item.price"
+                                   required
+                                   type="number"
+                                   minlength="1"
+                                   maxlength="10" />
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-select name="option" required [placeholder]="'Type' | localize"
+                                        [(ngModel)]="item.type">
+                                <mat-option *ngFor="let x of itemTypes" [value]="x.id">
+                                    {{x.value}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab [label]="'Price'|localize" *ngIf="item.type != 0">
+
+                <div class="body table-responsive">
+                    <!--query start-->
+                    <table class="table table-hover table-striped" [busy]="isTableLoading">
+                        <thead>
+                            <tr>
+
+                                <th>{{ "Price" | localize }}</th>
+                                <th>{{ "BufferTime" | localize }}</th>
+                                <th>{{ "Period" | localize }}</th>
+                                <th>{{ "Actions" | localize }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let prc of (ItemPrices
+                  | paginate
+                    : {
+                        id: 'server',
+                        itemsPerPage: pageSize,
+                        currentPage: pageNumber,
+                        totalItems: totalItems
+                      })
+              ">
+
+                                <td>
+                                    <input matInput
+                                           name="Price"
+                                           [placeholder]="'Price' | localize"
+                                           [(ngModel)]="prc.price"
+                                           required
+                                           type="number"
+                                           minlength="1"
+                                           maxlength="10" />
+                                </td>
+                                <td>
+                                    <input matInput
+                                           name="BufferTime"
+                                           [placeholder]="'BufferTime' | localize"
+                                           [(ngModel)]="prc.bufferTime"
+                                           required
+                                           type="number"
+                                           minlength="1"
+                                           maxlength="10" />
+                                </td>
+                                <td>
+                                    <input matInput
+                                           name="Period"
+                                           [placeholder]="'Period' | localize"
+                                           [(ngModel)]="prc.period"
+                                           required
+                                           type="number"
+                                           minlength="1"
+                                           maxlength="10" />
+                                </td>
+                                <td>
+                                    <button class="action-button" mat-icon-button [matMenuTriggerFor]="actionsMenu">
+                                        <mat-icon>menu</mat-icon>
+                                    </button>
+                                    <mat-menu #actionsMenu="matMenu">
+                                        <button mat-menu-item (click)="editPrice(item)">
+                                            <mat-icon>edit</mat-icon>
+                                            <span>{{ "Edit" | localize }}</span>
+                                        </button>
+                                        <button mat-menu-item (click)="delete(item)">
+                                            <mat-icon>delete</mat-icon>
+                                            <span>{{ "Delete" | localize }}</span>
+                                        </button>
+                                    </mat-menu>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <button  mat-mini-fab color="primary" class="pull-right" (click)="createItemPrice(); $event.preventDefault()">
+                        <mat-icon>add</mat-icon>
+                    </button>
+
+
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-dialog-content>
+    <div mat-dialog-actions align="end">
+        <button mat-button type="button" [disabled]="saving" (click)="close(false)">
+            {{ "Cancel" | localize }}
+        </button>
+        <button mat-flat-button
+                type="submit"
+                flex="15"
+                color="primary"
+                [disabled]="!createItemForm.form.valid || saving">
+            {{ "Save" | localize }}
+        </button>
+    </div>
 </form>
