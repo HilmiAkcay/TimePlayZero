@@ -72,7 +72,7 @@
 
                                 <td>
                                     <input matInput
-                                           name="Price"
+                                           name="Price_{{prc.uniqueId}}"
                                            [placeholder]="'Price' | localize"
                                            [(ngModel)]="prc.price"
                                            required
@@ -82,7 +82,7 @@
                                 </td>
                                 <td>
                                     <input matInput
-                                           name="BufferTime"
+                                           name="BufferTime_{{prc.uniqueId}}"
                                            [placeholder]="'BufferTime' | localize"
                                            [(ngModel)]="prc.bufferTime"
                                            required
@@ -92,7 +92,7 @@
                                 </td>
                                 <td>
                                     <input matInput
-                                           name="Period"
+                                           name="Period_{{prc.uniqueId}}"
                                            [placeholder]="'Period' | localize"
                                            [(ngModel)]="prc.period"
                                            required

@@ -9,9 +9,13 @@ import * as _ from 'lodash';
 import { AppComponentBase } from '@shared/app-component-base';
 import {
     ItemServiceProxy,
+    ItemPriceServiceProxy,
     GetRoleForEditOutput,
     PermissionDto,
-    ItemDto
+    ItemDto,
+    ItemPriceDto,
+    ItemEditDto,
+    
 } from '@shared/service-proxies/service-proxies';
 
 export interface ItemType {
@@ -29,13 +33,18 @@ export interface ItemType {
       mat-checkbox {
         padding-bottom: 5px;
       }
+
+     .deleteButton{
+        padding:0px;
+        margin : 0px;
+     }
     `
     ]
 })
 export class EditItemDialogComponent extends AppComponentBase
     implements OnInit {
     saving = false;
-    item: ItemDto = new ItemDto();
+    item: ItemEditDto = new ItemEditDto();
     permissions: PermissionDto[] = [];
     grantedPermissionNames: string[] = [];
     checkedPermissionsMap: { [key: string]: boolean } = {};
@@ -48,6 +57,8 @@ export class EditItemDialogComponent extends AppComponentBase
     constructor(
         injector: Injector,
         private _itemService: ItemServiceProxy,
+        private _itemPriceService: ItemPriceServiceProxy,
+
         private _dialogRef: MatDialogRef<EditItemDialogComponent>,
         @Optional() @Inject(MAT_DIALOG_DATA) private _id: number
     ) {
@@ -66,6 +77,10 @@ export class EditItemDialogComponent extends AppComponentBase
                 //});
                 //this.grantedPermissionNames = result.grantedPermissionNames;
                 //this.setInitialPermissionsStatus();
+            });
+        this._itemPriceService.getItemPrices(this._id)
+            .subscribe((result: ItemPriceDto[]) => {
+                this.item.itemPrices = result;
             });
     }
 
@@ -115,5 +130,35 @@ export class EditItemDialogComponent extends AppComponentBase
 
     close(result: any): void {
         this._dialogRef.close(result);
+    }
+
+    createItemPrice(): void {
+        
+        var itemPrice = new ItemPriceDto();
+        itemPrice.itemId = this.item.id;
+        itemPrice.uniqueId = Math.random().toString();
+        this.item.itemPrices.push(itemPrice);
+    }
+
+    deleteItemPrice(itemPrice: ItemPriceDto): void {
+        abp.message.confirm(
+            this.l('DeleteWarningMessage', itemPrice.price),
+            (result: boolean) => {
+                if (result) {
+                    this._itemPriceService
+                        .delete(itemPrice.id)
+                        .pipe(
+                            finalize(() => {
+                                abp.notify.success(this.l('SuccessfullyDeleted'));
+                                const index: number = this.item.itemPrices.indexOf(itemPrice);
+                                if (index !== -1) {
+                                    this.item.itemPrices.splice(index, 1);
+                                }   
+                            })
+                        )
+                        .subscribe(() => { });
+                }
+            }
+        );
     }
 }

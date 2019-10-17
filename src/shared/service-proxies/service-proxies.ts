@@ -853,6 +853,62 @@ export class ItemServiceProxy {
     }
 
     /**
+     * @param input (optional) 
+     * @return Success
+     */
+    update(input: ItemEditDto | null | undefined): Observable<ItemDto> {
+        let url_ = this.baseUrl + "/api/services/app/Item/Update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<ItemDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ItemDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<ItemDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ItemDto.fromJS(resultData200) : new ItemDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ItemDto>(<any>null);
+    }
+
+    /**
      * @param id (optional) 
      * @return Success
      */
@@ -967,62 +1023,6 @@ export class ItemServiceProxy {
     }
 
     /**
-     * @param input (optional) 
-     * @return Success
-     */
-    update(input: ItemDto | null | undefined): Observable<ItemDto> {
-        let url_ = this.baseUrl + "/api/services/app/Item/Update";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(input);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json", 
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUpdate(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processUpdate(<any>response_);
-                } catch (e) {
-                    return <Observable<ItemDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<ItemDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processUpdate(response: HttpResponseBase): Observable<ItemDto> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ItemDto.fromJS(resultData200) : new ItemDto();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<ItemDto>(<any>null);
-    }
-
-    /**
      * @param id (optional) 
      * @return Success
      */
@@ -1084,6 +1084,64 @@ export class ItemPriceServiceProxy {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @param itemId (optional) 
+     * @return Success
+     */
+    getItemPrices(itemId: number | null | undefined): Observable<ItemPriceDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/ItemPrice/GetItemPrices?";
+        if (itemId !== undefined)
+            url_ += "itemId=" + encodeURIComponent("" + itemId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetItemPrices(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetItemPrices(<any>response_);
+                } catch (e) {
+                    return <Observable<ItemPriceDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ItemPriceDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetItemPrices(response: HttpResponseBase): Observable<ItemPriceDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [];
+                for (let item of resultData200)
+                    result200.push(ItemPriceDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ItemPriceDto[]>(<any>null);
     }
 
     /**
@@ -3151,6 +3209,7 @@ export class CustomerDto implements ICustomerDto {
     customerGroupName: string | undefined;
     creationTime: moment.Moment | undefined;
     isDeleted: boolean | undefined;
+    uniqueId: string | undefined;
     id: number | undefined;
 
     constructor(data?: ICustomerDto) {
@@ -3174,6 +3233,7 @@ export class CustomerDto implements ICustomerDto {
             this.customerGroupName = data["customerGroupName"];
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
             this.isDeleted = data["isDeleted"];
+            this.uniqueId = data["uniqueId"];
             this.id = data["id"];
         }
     }
@@ -3197,6 +3257,7 @@ export class CustomerDto implements ICustomerDto {
         data["customerGroupName"] = this.customerGroupName;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
         data["isDeleted"] = this.isDeleted;
+        data["uniqueId"] = this.uniqueId;
         data["id"] = this.id;
         return data; 
     }
@@ -3220,6 +3281,7 @@ export interface ICustomerDto {
     customerGroupName: string | undefined;
     creationTime: moment.Moment | undefined;
     isDeleted: boolean | undefined;
+    uniqueId: string | undefined;
     id: number | undefined;
 }
 
@@ -3337,6 +3399,7 @@ export class CustomerGroupDto implements ICustomerGroupDto {
     name: string | undefined;
     creationTime: moment.Moment | undefined;
     isDeleted: boolean | undefined;
+    uniqueId: string | undefined;
     id: number | undefined;
 
     constructor(data?: ICustomerGroupDto) {
@@ -3353,6 +3416,7 @@ export class CustomerGroupDto implements ICustomerGroupDto {
             this.name = data["name"];
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
             this.isDeleted = data["isDeleted"];
+            this.uniqueId = data["uniqueId"];
             this.id = data["id"];
         }
     }
@@ -3369,6 +3433,7 @@ export class CustomerGroupDto implements ICustomerGroupDto {
         data["name"] = this.name;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
         data["isDeleted"] = this.isDeleted;
+        data["uniqueId"] = this.uniqueId;
         data["id"] = this.id;
         return data; 
     }
@@ -3385,6 +3450,7 @@ export interface ICustomerGroupDto {
     name: string | undefined;
     creationTime: moment.Moment | undefined;
     isDeleted: boolean | undefined;
+    uniqueId: string | undefined;
     id: number | undefined;
 }
 
@@ -3573,6 +3639,7 @@ export class ItemDto implements IItemDto {
     price: number | undefined;
     creationTime: moment.Moment | undefined;
     isDeleted: boolean | undefined;
+    uniqueId: string | undefined;
     id: number | undefined;
 
     constructor(data?: IItemDto) {
@@ -3593,6 +3660,7 @@ export class ItemDto implements IItemDto {
             this.price = data["price"];
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
             this.isDeleted = data["isDeleted"];
+            this.uniqueId = data["uniqueId"];
             this.id = data["id"];
         }
     }
@@ -3613,6 +3681,7 @@ export class ItemDto implements IItemDto {
         data["price"] = this.price;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
         data["isDeleted"] = this.isDeleted;
+        data["uniqueId"] = this.uniqueId;
         data["id"] = this.id;
         return data; 
     }
@@ -3633,6 +3702,165 @@ export interface IItemDto {
     price: number | undefined;
     creationTime: moment.Moment | undefined;
     isDeleted: boolean | undefined;
+    uniqueId: string | undefined;
+    id: number | undefined;
+}
+
+export class ItemEditDto implements IItemEditDto {
+    itemPrices: ItemPriceDto[] | undefined;
+    code: string | undefined;
+    name: string | undefined;
+    type: number | undefined;
+    typeName: string | undefined;
+    price: number | undefined;
+    creationTime: moment.Moment | undefined;
+    isDeleted: boolean | undefined;
+    uniqueId: string | undefined;
+    id: number | undefined;
+
+    constructor(data?: IItemEditDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (data["itemPrices"] && data["itemPrices"].constructor === Array) {
+                this.itemPrices = [];
+                for (let item of data["itemPrices"])
+                    this.itemPrices.push(ItemPriceDto.fromJS(item));
+            }
+            this.code = data["code"];
+            this.name = data["name"];
+            this.type = data["type"];
+            this.typeName = data["typeName"];
+            this.price = data["price"];
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.isDeleted = data["isDeleted"];
+            this.uniqueId = data["uniqueId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): ItemEditDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ItemEditDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.itemPrices && this.itemPrices.constructor === Array) {
+            data["itemPrices"] = [];
+            for (let item of this.itemPrices)
+                data["itemPrices"].push(item.toJSON());
+        }
+        data["code"] = this.code;
+        data["name"] = this.name;
+        data["type"] = this.type;
+        data["typeName"] = this.typeName;
+        data["price"] = this.price;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["isDeleted"] = this.isDeleted;
+        data["uniqueId"] = this.uniqueId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): ItemEditDto {
+        const json = this.toJSON();
+        let result = new ItemEditDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IItemEditDto {
+    itemPrices: ItemPriceDto[] | undefined;
+    code: string | undefined;
+    name: string | undefined;
+    type: number | undefined;
+    typeName: string | undefined;
+    price: number | undefined;
+    creationTime: moment.Moment | undefined;
+    isDeleted: boolean | undefined;
+    uniqueId: string | undefined;
+    id: number | undefined;
+}
+
+export class ItemPriceDto implements IItemPriceDto {
+    itemId: number | undefined;
+    price: number | undefined;
+    bufferTime: number | undefined;
+    period: number | undefined;
+    creationTime: moment.Moment | undefined;
+    isDeleted: boolean | undefined;
+    uniqueId: string | undefined;
+    id: number | undefined;
+
+    constructor(data?: IItemPriceDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.itemId = data["itemId"];
+            this.price = data["price"];
+            this.bufferTime = data["bufferTime"];
+            this.period = data["period"];
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.isDeleted = data["isDeleted"];
+            this.uniqueId = data["uniqueId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): ItemPriceDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ItemPriceDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["itemId"] = this.itemId;
+        data["price"] = this.price;
+        data["bufferTime"] = this.bufferTime;
+        data["period"] = this.period;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["isDeleted"] = this.isDeleted;
+        data["uniqueId"] = this.uniqueId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): ItemPriceDto {
+        const json = this.toJSON();
+        let result = new ItemPriceDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IItemPriceDto {
+    itemId: number | undefined;
+    price: number | undefined;
+    bufferTime: number | undefined;
+    period: number | undefined;
+    creationTime: moment.Moment | undefined;
+    isDeleted: boolean | undefined;
+    uniqueId: string | undefined;
     id: number | undefined;
 }
 
@@ -3689,73 +3917,6 @@ export class PagedResultDtoOfItemDto implements IPagedResultDtoOfItemDto {
 export interface IPagedResultDtoOfItemDto {
     totalCount: number | undefined;
     items: ItemDto[] | undefined;
-}
-
-export class ItemPriceDto implements IItemPriceDto {
-    itemId: number | undefined;
-    price: number | undefined;
-    bufferTime: number | undefined;
-    period: number | undefined;
-    creationTime: moment.Moment | undefined;
-    isDeleted: boolean | undefined;
-    id: number | undefined;
-
-    constructor(data?: IItemPriceDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.itemId = data["itemId"];
-            this.price = data["price"];
-            this.bufferTime = data["bufferTime"];
-            this.period = data["period"];
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.isDeleted = data["isDeleted"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): ItemPriceDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ItemPriceDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["itemId"] = this.itemId;
-        data["price"] = this.price;
-        data["bufferTime"] = this.bufferTime;
-        data["period"] = this.period;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["isDeleted"] = this.isDeleted;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): ItemPriceDto {
-        const json = this.toJSON();
-        let result = new ItemPriceDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IItemPriceDto {
-    itemId: number | undefined;
-    price: number | undefined;
-    bufferTime: number | undefined;
-    period: number | undefined;
-    creationTime: moment.Moment | undefined;
-    isDeleted: boolean | undefined;
-    id: number | undefined;
 }
 
 export class PagedResultDtoOfItemPriceDto implements IPagedResultDtoOfItemPriceDto {

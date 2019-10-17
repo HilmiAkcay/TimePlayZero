@@ -123,10 +123,8 @@ export class CreateItemDialogComponent extends AppComponentBase
     }
 
     createItemPrice(): void {
-
         const itemPrice = new ItemPriceDto();
-       
+        itemPrice.uniqueId = Math.random().toString();
         this.ItemPrices.push(itemPrice);
-       
     }
 }
