@@ -10,12 +10,14 @@ import { MenuItem } from '@shared/layout/menu-item';
 export class SideBarNavComponent extends AppComponentBase {
 
     menuItems: MenuItem[] = [
+        new MenuItem(this.l('Transactions'), 'Pages.Transactions', 'business', '/app/transactions'),
         new MenuItem(this.l('HomePage'), '', 'home', '/app/home'),
 
         new MenuItem(this.l('Tenants'), 'Pages.Tenants', 'business', '/app/tenants'),
         new MenuItem(this.l('Users'), 'Pages.Users', 'people', '/app/users'),
         new MenuItem(this.l('Roles'), 'Pages.Roles', 'local_offer', '/app/roles'),
         new MenuItem(this.l('About'), '', 'info', '/app/about'),
+        new MenuItem(this.l('ItemGroups'), 'Pages.ItemGroups', 'directions_car', '/app/itemGroups'),
         new MenuItem(this.l('Items'), 'Pages.Items', 'directions_car', '/app/items'),
         new MenuItem(this.l('Customers'), '', 'business', '', [
             new MenuItem(this.l('CustomerGroups'), 'Pages.CustomerGroups', '', '/app/customerGroups'),

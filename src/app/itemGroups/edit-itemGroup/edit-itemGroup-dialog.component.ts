@@ -8,17 +8,10 @@ import { finalize } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { AppComponentBase } from '@shared/app-component-base';
 import {
-    ItemServiceProxy,
-    ItemPriceServiceProxy,
+    ItemGroupServiceProxy,
     GetRoleForEditOutput,
     PermissionDto,
-    ItemDto,
-    ItemPriceDto,
-    ItemEditDto,
-    ItemGroupServiceProxy,
-    ItemGroupDto,
-    PagedResultDtoOfItemGroupDto
-    
+    ItemGroupDto
 } from '@shared/service-proxies/service-proxies';
 
 export interface ItemType {
@@ -27,7 +20,7 @@ export interface ItemType {
 }
 
 @Component({
-    templateUrl: 'edit-item-dialog.component.html',
+    templateUrl: 'edit-itemGroup-dialog.component.html',
     styles: [
         `
       mat-form-field {
@@ -36,45 +29,31 @@ export interface ItemType {
       mat-checkbox {
         padding-bottom: 5px;
       }
-
-     .deleteButton{
-        padding:0px;
-        margin : 0px;
-     }
     `
     ]
 })
-export class EditItemDialogComponent extends AppComponentBase
+export class EditItemGroupDialogComponent extends AppComponentBase
     implements OnInit {
     saving = false;
-    item: ItemEditDto = new ItemEditDto();
+    itemGroup: ItemGroupDto = new ItemGroupDto();
     permissions: PermissionDto[] = [];
-    itemGroups: ItemGroupDto[] = [];
     grantedPermissionNames: string[] = [];
     checkedPermissionsMap: { [key: string]: boolean } = {};
-    itemTypes: ItemType[] = [
-        { id: 0, value: 'Standard' },
-        { id: 1, value: 'Time Based' },
-        { id: 2, value: 'Period Based' },
-    ];
 
     constructor(
         injector: Injector,
-        private _itemService: ItemServiceProxy,
         private _itemGroupService: ItemGroupServiceProxy,
-        private _itemPriceService: ItemPriceServiceProxy,
-
-        private _dialogRef: MatDialogRef<EditItemDialogComponent>,
+        private _dialogRef: MatDialogRef<EditItemGroupDialogComponent>,
         @Optional() @Inject(MAT_DIALOG_DATA) private _id: number
     ) {
         super(injector);
     }
 
     ngOnInit(): void {
-        this._itemService
+        this._itemGroupService
             .get(this._id)
-            .subscribe((result: ItemDto) => {
-                this.item.init(result);
+            .subscribe((result: ItemGroupDto) => {
+                this.itemGroup.init(result);
                 //_.map(result.permissions, item => {
                 //  const permission = new PermissionDto();
                 //  permission.init(item);
@@ -82,21 +61,6 @@ export class EditItemDialogComponent extends AppComponentBase
                 //});
                 //this.grantedPermissionNames = result.grantedPermissionNames;
                 //this.setInitialPermissionsStatus();
-            });
-        this._itemPriceService.getItemPrices(this._id)
-            .subscribe((result: ItemPriceDto[]) => {
-                this.item.itemPrices = result;
-            });
-        this._itemGroupService
-            .getAll("", 0, 100)
-            .pipe(
-                finalize(() => {
-                    //finishedCallback();
-                })
-            )
-            .subscribe((result: PagedResultDtoOfItemGroupDto) => {
-                this.itemGroups = result.items;
-
             });
     }
 
@@ -131,8 +95,8 @@ export class EditItemDialogComponent extends AppComponentBase
 
         //this.item.grantedPermissions = this.getCheckedPermissions();
 
-        this._itemService
-            .update(this.item)
+        this._itemGroupService
+            .update(this.itemGroup)
             .pipe(
                 finalize(() => {
                     this.saving = false;
@@ -146,35 +110,5 @@ export class EditItemDialogComponent extends AppComponentBase
 
     close(result: any): void {
         this._dialogRef.close(result);
-    }
-
-    createItemPrice(): void {
-        
-        var itemPrice = new ItemPriceDto();
-        itemPrice.itemId = this.item.id;
-        itemPrice.uniqueId = Math.random().toString();
-        this.item.itemPrices.push(itemPrice);
-    }
-
-    deleteItemPrice(itemPrice: ItemPriceDto): void {
-        abp.message.confirm(
-            this.l('DeleteWarningMessage', itemPrice.price),
-            (result: boolean) => {
-                if (result) {
-                    this._itemPriceService
-                        .delete(itemPrice.id)
-                        .pipe(
-                            finalize(() => {
-                                abp.notify.success(this.l('SuccessfullyDeleted'));
-                                const index: number = this.item.itemPrices.indexOf(itemPrice);
-                                if (index !== -1) {
-                                    this.item.itemPrices.splice(index, 1);
-                                }   
-                            })
-                        )
-                        .subscribe(() => { });
-                }
-            }
-        );
     }
 }

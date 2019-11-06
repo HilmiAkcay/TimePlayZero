@@ -1,0 +1,104 @@
+<div class="row clearfix" [@routerTransition]>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card main-content">
+            <div class="header">
+                <div class="body table-responsive">
+                    <!--query start-->
+                    <div class="row clearfix">
+                        <form>
+                            <div class="col-md-2 col-sm-3">
+                                <mat-form-field>
+                                    <input matInput [placeholder]="l('ItemCode')" [(ngModel)]="transaction.itemPriceCode" name="itemPriceCode" (focusout)="focusOutFunction()">
+                                    <button mat-icon-button matSuffix>
+                                        <mat-icon>search</mat-icon>
+                                    </button>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-md-2 col-sm-3">
+                                <mat-form-field>
+                                    <input matInput [placeholder]="l('Customer')" [(ngModel)]="transaction.customerName" name="customerId">
+                                    <button mat-icon-button matSuffix>
+                                        <mat-icon>search</mat-icon>
+                                    </button>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-2  col-sm-3">
+                                <mat-form-field>
+                                    <input matInput [placeholder]="l('PhoneNumber')" [(ngModel)]="transaction.phoneNumber" name="phoneNumber">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-2  col-sm-3">
+                                <mat-form-field>
+                                    <input matInput type="time" [placeholder]="l('StartTime')" [(ngModel)]="transaction.sTime" name="startTime">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-2  col-sm-3">
+                                <mat-form-field>
+                                    <input matInput type="time" [placeholder]="l('EndTime')" [(ngModel)]="transaction.eTime" name="endTime">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-md-1  col-sm-3">
+                                <mat-form-field>
+                                    <input matInput [placeholder]="l('Price')" [(ngModel)]="transaction.price" name="price">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-md-1  col-sm-3 align-middle" style="padding:20px;">
+                                <button class="buttonHeader" mat-raised-button color="primary" (click)="createTransaction()">
+                                    <mat-icon>add</mat-icon>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div *ngFor="let tran of trans" class=" col-md-3 col-sm-4 p-b-15">
+                <mat-card>
+                    <div class="row">
+                        <div class="col-md-12 m-b-10">
+                            {{tran.description}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 m-b-10">
+                            {{tran.customerName}} -({{tran.phoneNumber}})
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 m-b-10">
+                            {{tran.sTime}} - {{tran.eTime}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 m-b-10 font-bold">
+                            {{tran.price}} TL
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 text-right p-r-15">
+                            <span>
+                                <button mat-icon-button color="warn" (click)="getDataPage(1)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </span>
+                            <span>
+                                <button mat-icon-button color="warn" (click)="getDataPage(1)">
+                                    <mat-icon>done_outline</mat-icon>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+
+                </mat-card>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>

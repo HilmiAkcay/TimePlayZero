@@ -31,6 +31,10 @@ import { EditTenantDialogComponent } from './tenants/edit-tenant/edit-tenant-dia
 import { RolesComponent } from '@app/roles/roles.component';
 import { CreateRoleDialogComponent } from './roles/create-role/create-role-dialog.component';
 import { EditRoleDialogComponent } from './roles/edit-role/edit-role-dialog.component';
+// itemGroups
+import { ItemGroupsComponent } from '@app/itemGroups/itemGroups.component';
+import { CreateItemGroupDialogComponent } from './itemGroups/create-itemGroup/create-itemGroup-dialog.component';
+import { EditItemGroupDialogComponent } from './itemGroups/edit-itemGroup/edit-itemGroup-dialog.component';
 // items
 import { ItemsComponent } from '@app/items/items.component';
 import { CreateItemDialogComponent } from './items/create-item/create-item-dialog.component';
@@ -51,6 +55,9 @@ import { EditCustomerGroupDialogComponent } from './customerGroups/edit-customer
 import { CustomersComponent } from './customers/customers.component';
 import { CreateCustomerDialogComponent } from './customers/create-customer/create-customer-dialog.component';
 import { EditCustomerDialogComponent } from './customers/edit-customer/edit-customer-dialog.component';
+
+//Transaction
+import { TransactionsComponent } from './transactions/transactions.component';
 
 @NgModule({
     declarations: [
@@ -78,6 +85,10 @@ import { EditCustomerDialogComponent } from './customers/edit-customer/edit-cust
         ChangePasswordComponent,
         ResetPasswordDialogComponent,
 
+        // itemGroups
+        ItemGroupsComponent,
+        CreateItemGroupDialogComponent,
+        EditItemGroupDialogComponent,
         // items
         ItemsComponent,
         CreateItemDialogComponent,
@@ -92,6 +103,10 @@ import { EditCustomerDialogComponent } from './customers/edit-customer/edit-cust
         CustomersComponent,
         CreateCustomerDialogComponent,
         EditCustomerDialogComponent,
+
+        //Transactions
+        TransactionsComponent,
+      
     ],
     imports: [
         CommonModule,
@@ -118,6 +133,9 @@ import { EditCustomerDialogComponent } from './customers/edit-customer/edit-cust
         CreateUserDialogComponent,
         EditUserDialogComponent,
         ResetPasswordDialogComponent,
+        // itemGroups
+        CreateItemGroupDialogComponent,
+        EditItemGroupDialogComponent,
         // items
         CreateItemDialogComponent,
         EditItemDialogComponent,

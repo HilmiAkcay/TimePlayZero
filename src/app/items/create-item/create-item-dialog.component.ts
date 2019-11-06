@@ -4,13 +4,19 @@ import { finalize } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { AppComponentBase } from '@shared/app-component-base';
 import {
+    PagedListingComponentBase,
+    PagedRequestDto
+} from '@shared/paged-listing-component-base';
+import {
     ItemServiceProxy,
     ItemPriceServiceProxy,
     ItemDto,
     ItemPriceDto,
     ListResultDtoOfPermissionDto,
     PermissionDto,
-    CreateItemDto
+    CreateItemDto,    ItemGroupServiceProxy,
+    ItemGroupDto,
+    PagedResultDtoOfItemGroupDto
 } from '@shared/service-proxies/service-proxies';
 
 export interface ItemType {
@@ -37,6 +43,7 @@ export class CreateItemDialogComponent extends AppComponentBase
     isHidden = true;
     item: ItemDto = new ItemDto();
     ItemPrices: ItemPriceDto[] = [];
+    itemGroups: ItemGroupDto[] = [];
     permissions: PermissionDto[] = [];
     grantedPermissionNames: string[] = [];
     checkedPermissionsMap: { [key: string]: boolean } = {};
@@ -50,12 +57,27 @@ export class CreateItemDialogComponent extends AppComponentBase
     constructor(
         injector: Injector,
         private _itemService: ItemServiceProxy,
+        private _itemGroupService: ItemGroupServiceProxy,
+
         private _dialogRef: MatDialogRef<CreateItemDialogComponent>
     ) {
         super(injector);
     }
 
     ngOnInit(): void {
+
+        this._itemGroupService
+            .getAll("", 0, 100)
+            .pipe(
+                finalize(() => {
+                    //finishedCallback();
+                })
+            )
+            .subscribe((result: PagedResultDtoOfItemGroupDto) => {
+                this.itemGroups = result.items;
+
+            });
+
         //const priceDto = new ItemPriceDto();
         //priceDto.price = 3;
         //this.ItemPrices.push(priceDto);

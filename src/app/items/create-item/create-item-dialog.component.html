@@ -7,15 +7,6 @@
                     <div class="col-md-12">
                         <mat-form-field>
                             <input matInput
-                                   name="Code"
-                                   [placeholder]="'Code' | localize"
-                                   [(ngModel)]="item.code"
-                                   required
-                                   minlength="2"
-                                   maxlength="32" />
-                        </mat-form-field>
-                        <mat-form-field>
-                            <input matInput
                                    name="Name"
                                    [placeholder]="'Name' | localize"
                                    [(ngModel)]="item.name"
@@ -24,20 +15,18 @@
                                    maxlength="32" />
                         </mat-form-field>
                         <mat-form-field>
-                            <input matInput
-                                   name="Price"
-                                   [placeholder]="'Price' | localize"
-                                   [(ngModel)]="item.price"
-                                   required
-                                   type="number"
-                                   minlength="1"
-                                   maxlength="10" />
-                        </mat-form-field>
-                        <mat-form-field>
                             <mat-select name="option" required [placeholder]="'Type' | localize"
                                         [(ngModel)]="item.type">
                                 <mat-option *ngFor="let x of itemTypes" [value]="x.id">
                                     {{x.value}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-select name="group" required [placeholder]="'ItemGroups' | localize"
+                                        [(ngModel)]="item.itemGroupId">
+                                <mat-option *ngFor="let x of itemGroups" [value]="x.id">
+                                    {{x.name}}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
@@ -52,7 +41,7 @@
                     <table class="table table-hover table-striped" [busy]="isTableLoading">
                         <thead>
                             <tr>
-
+                                <th>{{ "Code" | localize }}</th>
                                 <th>{{ "Price" | localize }}</th>
                                 <th>{{ "BufferTime" | localize }}</th>
                                 <th>{{ "Period" | localize }}</th>
@@ -69,7 +58,15 @@
                         totalItems: totalItems
                       })
               ">
-
+                                <td>
+                                    <input matInput
+                                           name="Code_{{prc.uniqueId}}"
+                                           [placeholder]="'Code' | localize"
+                                           [(ngModel)]="prc.code"
+                                           required
+                                           minlength="1"
+                                           maxlength="10" />
+                                </td>
                                 <td>
                                     <input matInput
                                            name="Price_{{prc.uniqueId}}"
@@ -84,7 +81,7 @@
                                     <input matInput
                                            name="BufferTime_{{prc.uniqueId}}"
                                            [placeholder]="'BufferTime' | localize"
-                                           [(ngModel)]="prc.bufferTime"
+                                           [(ngModel)]="prc.bufferTimePeriod"
                                            required
                                            type="number"
                                            minlength="1"
@@ -94,7 +91,7 @@
                                     <input matInput
                                            name="Period_{{prc.uniqueId}}"
                                            [placeholder]="'Period' | localize"
-                                           [(ngModel)]="prc.period"
+                                           [(ngModel)]="prc.timePeriod"
                                            required
                                            type="number"
                                            minlength="1"
