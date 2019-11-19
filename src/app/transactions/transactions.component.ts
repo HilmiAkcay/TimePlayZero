@@ -31,10 +31,17 @@ class PagedItemsRequestDto extends PagedRequestDto {
           }
 
          .buttonHeader{
-  margin: Auto;
- 
-  padding: 0px;
-}
+            margin: Auto;
+            padding: 0px;
+          }
+
+          .button {
+              display: none;
+          }
+          
+          .wrapper:hover + .button, .button:hover {
+              display: inline-block;
+          }
         `
     ]
 })
@@ -42,12 +49,26 @@ export class TransactionsComponent extends PagedListingComponentBase<Transaction
     trans: TransactionDto[] = [];
     transaction: CreateTransactionDto = new CreateTransactionDto();
     keyword = '';
+    interval: any;
 
     constructor(
         injector: Injector,
         private _tranService: TransactionServiceProxy,
         private _itemService: ItemServiceProxy) {
         super(injector);
+    }
+
+    ngOnInit() {
+        this.refreshData();
+        this.interval = setInterval(() => {
+            this.refreshData();
+        }, 15000);
+    }
+
+    ngOnDestroy() {
+        if (this.interval) {
+            clearInterval(this.interval);
+        }
     }
 
     list(
@@ -91,6 +112,7 @@ export class TransactionsComponent extends PagedListingComponentBase<Transaction
     }
 
     createTransaction(): void {
+        debugger;
         this._tranService
             .create(this.transaction)
             .pipe(
@@ -98,9 +120,10 @@ export class TransactionsComponent extends PagedListingComponentBase<Transaction
                     //this.saving = false;
                 })
             )
-            .subscribe(() => {
+            .subscribe(s => {
                 this.notify.info(this.l('SavedSuccessfully'));
-                //this.close(true);
+                this.trans.unshift(s);
+                this.transaction = new TransactionDto();
             });
     }
 
@@ -108,41 +131,43 @@ export class TransactionsComponent extends PagedListingComponentBase<Transaction
         if (this.transaction.itemPriceCode === "") {
             alert("ItemCode cannot be emty");
         } else {
-            debugger;
             this._tranService.getItemPrice(this.transaction.itemPriceCode)
                 .pipe(
                     finalize(() => {
                         //finishedCallback();
                     })
-            )
+                )
                 .subscribe((result: CreateTransactionDto) => {
+
                     this.transaction = result;
                 });
         }
     }
 
-    //createItem(): void {
-    //    this.showCreateOrEditItemDialog();
-    //}
+    refreshData() {
+        this._tranService
+            .getAll("", 0, 20)
+            .pipe(
+                finalize(() => {
 
-    //editItem(role: ItemDto): void {
-    //    this.showCreateOrEditItemDialog(role.id);
-    //}
+                })
+            )
+            .subscribe((result: PagedResultDtoOfTransactionDto) => {
+                this.trans = result.items;
+            });
+    }
 
-    //showCreateOrEditItemDialog(id?: number): void {
-    //    let createOrEditItemDialog;
-    //    if (id === undefined || id <= 0) {
-    //        createOrEditItemDialog = this._dialog.open(CreateItemDialogComponent);
-    //    } else {
-    //        createOrEditItemDialog = this._dialog.open(EditItemDialogComponent, {
-    //            data: id
-    //        });
-    //    }
+    finishItem(e): void {
+        var ind = this.trans.indexOf(e); 
+        var tranDto = e;
+        tranDto.state = 1;
+        debugger;
+        this._tranService.finishItem(tranDto.id).subscribe((result: void) => {
+          
+        this.trans.splice(ind, 1);
+        });
+        
+    }
 
-    //    createOrEditItemDialog.afterClosed().subscribe(result => {
-    //        if (result) {
-    //            this.refresh();
-    //        }
-    //    });
-    //}
+
 }

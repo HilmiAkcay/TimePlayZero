@@ -30,12 +30,12 @@
                             </div>
                             <div class="col-md-2  col-sm-3">
                                 <mat-form-field>
-                                    <input matInput type="time" [placeholder]="l('StartTime')" [(ngModel)]="transaction.sTime" name="startTime">
+                                    <input matInput type="time" [placeholder]="l('StartTime')" [(ngModel)]="transaction.startTime" name="startTime">
                                 </mat-form-field>
                             </div>
                             <div class="col-md-2  col-sm-3">
                                 <mat-form-field>
-                                    <input matInput type="time" [placeholder]="l('EndTime')" [(ngModel)]="transaction.eTime" name="endTime">
+                                    <input matInput type="time" [placeholder]="l('EndTime')" [(ngModel)]="transaction.endTime" name="endTime">
                                 </mat-form-field>
                             </div>
                             <div class="col-md-1  col-sm-3">
@@ -54,47 +54,55 @@
                 </div>
             </div>
         </div>
+        <div class="overflow-auto">
+            <div class="row" style="height:100%; overflow-y:scroll">
+                <div *ngFor="let tran of trans" class=" col-md-3 col-sm-4 p-b-15">
+                    <div class="wrapper ">
+                        <mat-card class="card " [ngStyle]="{'background-color': tran.color}">
+                          
+                                <div class="row">
+                                    <div class="col-md-12 m-b-10">
+                                        {{tran.description}}
+                                    </div>
+                                </div>
 
-        <div class="row">
-            <div *ngFor="let tran of trans" class=" col-md-3 col-sm-4 p-b-15">
-                <mat-card>
-                    <div class="row">
-                        <div class="col-md-12 m-b-10">
-                            {{tran.description}}
-                        </div>
-                    </div>
+                                <div class="row">
+                                    <div class="col-md-12 m-b-10">
+                                        {{tran.customerInfo}}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-8 m-b-10">
+                                        {{tran.startTime}} - {{tran.endTime}}
+                                    </div>
+                                    <div class="col-md-48 m-b-10 m-r-10 align-right">
+                                        Kalan {{tran.timeLeft}} dk.
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 m-b-10 font-bold">
+                                        {{tran.price}} TL
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 text-right p-r-15">
+                                        <span>
+                                            <button mat-icon-button color="warn" (click)="getDataPage(1)">
+                                                <mat-icon>edit</mat-icon>
+                                            </button>
+                                        </span>
+                                        <span>
+                                            <button mat-icon-button color="warn" (click)="finishItem(tran)">
+                                                <mat-icon>done_outline</mat-icon>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                       
 
-                    <div class="row">
-                        <div class="col-md-12 m-b-10">
-                            {{tran.customerName}} -({{tran.phoneNumber}})
-                        </div>
+                        </mat-card>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 m-b-10">
-                            {{tran.sTime}} - {{tran.eTime}}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 m-b-10 font-bold">
-                            {{tran.price}} TL
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 text-right p-r-15">
-                            <span>
-                                <button mat-icon-button color="warn" (click)="getDataPage(1)">
-                                    <mat-icon>edit</mat-icon>
-                                </button>
-                            </span>
-                            <span>
-                                <button mat-icon-button color="warn" (click)="getDataPage(1)">
-                                    <mat-icon>done_outline</mat-icon>
-                                </button>
-                            </span>
-                        </div>
-                    </div>
-
-                </mat-card>
+                </div>
             </div>
         </div>
 
@@ -102,3 +110,5 @@
 
     </div>
 </div>
+
+

@@ -2693,6 +2693,62 @@ export class TransactionServiceProxy {
      * @param input (optional) 
      * @return Success
      */
+    update(input: TransactionDto | null | undefined): Observable<TransactionDto> {
+        let url_ = this.baseUrl + "/api/services/app/Transaction/Update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<TransactionDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<TransactionDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<TransactionDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? TransactionDto.fromJS(resultData200) : new TransactionDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<TransactionDto>(<any>null);
+    }
+
+    /**
+     * @param input (optional) 
+     * @return Success
+     */
     create(input: CreateTransactionDto | null | undefined): Observable<TransactionDto> {
         let url_ = this.baseUrl + "/api/services/app/Transaction/Create";
         url_ = url_.replace(/[?&]$/, "");
@@ -2743,6 +2799,56 @@ export class TransactionServiceProxy {
             }));
         }
         return _observableOf<TransactionDto>(<any>null);
+    }
+
+    /**
+     * @param transactionId (optional) 
+     * @return Success
+     */
+    finishItem(transactionId: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Transaction/FinishItem?";
+        if (transactionId !== undefined)
+            url_ += "transactionId=" + encodeURIComponent("" + transactionId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processFinishItem(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processFinishItem(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processFinishItem(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
     }
 
     /**
@@ -2892,62 +2998,6 @@ export class TransactionServiceProxy {
     }
 
     protected processGet(response: HttpResponseBase): Observable<TransactionDto> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? TransactionDto.fromJS(resultData200) : new TransactionDto();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<TransactionDto>(<any>null);
-    }
-
-    /**
-     * @param input (optional) 
-     * @return Success
-     */
-    update(input: TransactionDto | null | undefined): Observable<TransactionDto> {
-        let url_ = this.baseUrl + "/api/services/app/Transaction/Update";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(input);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json", 
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUpdate(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processUpdate(<any>response_);
-                } catch (e) {
-                    return <Observable<TransactionDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<TransactionDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processUpdate(response: HttpResponseBase): Observable<TransactionDto> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -5999,106 +6049,23 @@ export interface IExternalAuthenticateResultModel {
     waitingForActivation: boolean | undefined;
 }
 
-export class CreateTransactionDto implements ICreateTransactionDto {
-    itemPriceCode: string | undefined;
-    description: string | undefined;
-    startTime: moment.Moment | undefined;
-    sTime: string | undefined;
-    endTime: moment.Moment | undefined;
-    eTime: string | undefined;
-    price: number | undefined;
-    state: number | undefined;
-    itemPriceId: number | undefined;
-    customerId: number | undefined;
-    phoneNumber: string | undefined;
-    customerName: string | undefined;
-
-    constructor(data?: ICreateTransactionDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.itemPriceCode = data["itemPriceCode"];
-            this.description = data["description"];
-            this.startTime = data["startTime"] ? moment(data["startTime"].toString()) : <any>undefined;
-            this.sTime = data["sTime"];
-            this.endTime = data["endTime"] ? moment(data["endTime"].toString()) : <any>undefined;
-            this.eTime = data["eTime"];
-            this.price = data["price"];
-            this.state = data["state"];
-            this.itemPriceId = data["itemPriceId"];
-            this.customerId = data["customerId"];
-            this.phoneNumber = data["phoneNumber"];
-            this.customerName = data["customerName"];
-        }
-    }
-
-    static fromJS(data: any): CreateTransactionDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateTransactionDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["itemPriceCode"] = this.itemPriceCode;
-        data["description"] = this.description;
-        data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
-        data["sTime"] = this.sTime;
-        data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
-        data["eTime"] = this.eTime;
-        data["price"] = this.price;
-        data["state"] = this.state;
-        data["itemPriceId"] = this.itemPriceId;
-        data["customerId"] = this.customerId;
-        data["phoneNumber"] = this.phoneNumber;
-        data["customerName"] = this.customerName;
-        return data; 
-    }
-
-    clone(): CreateTransactionDto {
-        const json = this.toJSON();
-        let result = new CreateTransactionDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ICreateTransactionDto {
-    itemPriceCode: string | undefined;
-    description: string | undefined;
-    startTime: moment.Moment | undefined;
-    sTime: string | undefined;
-    endTime: moment.Moment | undefined;
-    eTime: string | undefined;
-    price: number | undefined;
-    state: number | undefined;
-    itemPriceId: number | undefined;
-    customerId: number | undefined;
-    phoneNumber: string | undefined;
-    customerName: string | undefined;
-}
-
 export class TransactionDto implements ITransactionDto {
     itemPriceCode: string | undefined;
     description: string | undefined;
-    startTime: moment.Moment | undefined;
-    endTime: moment.Moment | undefined;
+    startTime: string | undefined;
+    endTime: string | undefined;
     price: number | undefined;
     state: number | undefined;
     itemPriceId: number | undefined;
     customerId: number | undefined;
     phoneNumber: string | undefined;
     customerName: string | undefined;
-    sTime: string | undefined;
-    eTime: string | undefined;
+    bufferTimePeriod: number | undefined;
+    color: string | undefined;
+    customerInfo: string | undefined;
+    timeLeft: number | undefined;
+    isExpired: boolean | undefined;
+    updateNextItem: boolean | undefined;
     creationTime: moment.Moment | undefined;
     isDeleted: boolean | undefined;
     uniqueId: string | undefined;
@@ -6117,16 +6084,20 @@ export class TransactionDto implements ITransactionDto {
         if (data) {
             this.itemPriceCode = data["itemPriceCode"];
             this.description = data["description"];
-            this.startTime = data["startTime"] ? moment(data["startTime"].toString()) : <any>undefined;
-            this.endTime = data["endTime"] ? moment(data["endTime"].toString()) : <any>undefined;
+            this.startTime = data["startTime"];
+            this.endTime = data["endTime"];
             this.price = data["price"];
             this.state = data["state"];
             this.itemPriceId = data["itemPriceId"];
             this.customerId = data["customerId"];
             this.phoneNumber = data["phoneNumber"];
             this.customerName = data["customerName"];
-            this.sTime = data["sTime"];
-            this.eTime = data["eTime"];
+            this.bufferTimePeriod = data["bufferTimePeriod"];
+            this.color = data["color"];
+            this.customerInfo = data["customerInfo"];
+            this.timeLeft = data["timeLeft"];
+            this.isExpired = data["isExpired"];
+            this.updateNextItem = data["updateNextItem"];
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
             this.isDeleted = data["isDeleted"];
             this.uniqueId = data["uniqueId"];
@@ -6145,16 +6116,20 @@ export class TransactionDto implements ITransactionDto {
         data = typeof data === 'object' ? data : {};
         data["itemPriceCode"] = this.itemPriceCode;
         data["description"] = this.description;
-        data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
-        data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
+        data["startTime"] = this.startTime;
+        data["endTime"] = this.endTime;
         data["price"] = this.price;
         data["state"] = this.state;
         data["itemPriceId"] = this.itemPriceId;
         data["customerId"] = this.customerId;
         data["phoneNumber"] = this.phoneNumber;
         data["customerName"] = this.customerName;
-        data["sTime"] = this.sTime;
-        data["eTime"] = this.eTime;
+        data["bufferTimePeriod"] = this.bufferTimePeriod;
+        data["color"] = this.color;
+        data["customerInfo"] = this.customerInfo;
+        data["timeLeft"] = this.timeLeft;
+        data["isExpired"] = this.isExpired;
+        data["updateNextItem"] = this.updateNextItem;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
         data["isDeleted"] = this.isDeleted;
         data["uniqueId"] = this.uniqueId;
@@ -6173,20 +6148,107 @@ export class TransactionDto implements ITransactionDto {
 export interface ITransactionDto {
     itemPriceCode: string | undefined;
     description: string | undefined;
-    startTime: moment.Moment | undefined;
-    endTime: moment.Moment | undefined;
+    startTime: string | undefined;
+    endTime: string | undefined;
     price: number | undefined;
     state: number | undefined;
     itemPriceId: number | undefined;
     customerId: number | undefined;
     phoneNumber: string | undefined;
     customerName: string | undefined;
-    sTime: string | undefined;
-    eTime: string | undefined;
+    bufferTimePeriod: number | undefined;
+    color: string | undefined;
+    customerInfo: string | undefined;
+    timeLeft: number | undefined;
+    isExpired: boolean | undefined;
+    updateNextItem: boolean | undefined;
     creationTime: moment.Moment | undefined;
     isDeleted: boolean | undefined;
     uniqueId: string | undefined;
     id: number | undefined;
+}
+
+export class CreateTransactionDto implements ICreateTransactionDto {
+    itemPriceCode: string | undefined;
+    description: string | undefined;
+    startTime: string | undefined;
+    endTime: string | undefined;
+    price: number | undefined;
+    state: number | undefined;
+    itemPriceId: number | undefined;
+    customerId: number | undefined;
+    phoneNumber: string | undefined;
+    customerName: string | undefined;
+    bufferTimePeriod: number | undefined;
+
+    constructor(data?: ICreateTransactionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.itemPriceCode = data["itemPriceCode"];
+            this.description = data["description"];
+            this.startTime = data["startTime"];
+            this.endTime = data["endTime"];
+            this.price = data["price"];
+            this.state = data["state"];
+            this.itemPriceId = data["itemPriceId"];
+            this.customerId = data["customerId"];
+            this.phoneNumber = data["phoneNumber"];
+            this.customerName = data["customerName"];
+            this.bufferTimePeriod = data["bufferTimePeriod"];
+        }
+    }
+
+    static fromJS(data: any): CreateTransactionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateTransactionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["itemPriceCode"] = this.itemPriceCode;
+        data["description"] = this.description;
+        data["startTime"] = this.startTime;
+        data["endTime"] = this.endTime;
+        data["price"] = this.price;
+        data["state"] = this.state;
+        data["itemPriceId"] = this.itemPriceId;
+        data["customerId"] = this.customerId;
+        data["phoneNumber"] = this.phoneNumber;
+        data["customerName"] = this.customerName;
+        data["bufferTimePeriod"] = this.bufferTimePeriod;
+        return data; 
+    }
+
+    clone(): CreateTransactionDto {
+        const json = this.toJSON();
+        let result = new CreateTransactionDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateTransactionDto {
+    itemPriceCode: string | undefined;
+    description: string | undefined;
+    startTime: string | undefined;
+    endTime: string | undefined;
+    price: number | undefined;
+    state: number | undefined;
+    itemPriceId: number | undefined;
+    customerId: number | undefined;
+    phoneNumber: string | undefined;
+    customerName: string | undefined;
+    bufferTimePeriod: number | undefined;
 }
 
 export class PagedResultDtoOfTransactionDto implements IPagedResultDtoOfTransactionDto {
