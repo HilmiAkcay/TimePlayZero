@@ -14,6 +14,7 @@ import {
 
 } from '@shared/service-proxies/service-proxies';
 import { debug } from 'util';
+import { EditTransactionDialogComponent } from './edit-transaction/edit-transaction-dialog.component';
 //import { CreateItemDialogComponent } from './create-item/create-item-dialog.component';
 //import { EditItemDialogComponent } from './edit-item/edit-item-dialog.component';
 
@@ -54,6 +55,7 @@ export class TransactionsComponent extends PagedListingComponentBase<Transaction
     constructor(
         injector: Injector,
         private _tranService: TransactionServiceProxy,
+        private _dialog: MatDialog,
         private _itemService: ItemServiceProxy) {
         super(injector);
     }
@@ -158,15 +160,34 @@ export class TransactionsComponent extends PagedListingComponentBase<Transaction
     }
 
     finishItem(e): void {
-        var ind = this.trans.indexOf(e); 
+        var ind = this.trans.indexOf(e);
         var tranDto = e;
         tranDto.state = 1;
         debugger;
         this._tranService.finishItem(tranDto.id).subscribe((result: void) => {
-          
-        this.trans.splice(ind, 1);
+
+            this.trans.splice(ind, 1);
         });
-        
+
+    }
+
+    editItem(tran: TransactionDto): void {
+        this.showCreateOrEditItemDialog(tran.id);
+    }
+
+    showCreateOrEditItemDialog(id?: number): void {
+        let createOrEditItemDialog;
+        {
+            createOrEditItemDialog = this._dialog.open(EditTransactionDialogComponent, {
+                data: id
+            });
+        }
+
+        createOrEditItemDialog.afterClosed().subscribe(result => {
+            if (result) {
+                this.refresh();
+            }
+        });
     }
 
 

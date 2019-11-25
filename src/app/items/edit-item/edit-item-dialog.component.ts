@@ -10,7 +10,6 @@ import { AppComponentBase } from '@shared/app-component-base';
 import {
     ItemServiceProxy,
     ItemPriceServiceProxy,
-    GetRoleForEditOutput,
     PermissionDto,
     ItemDto,
     ItemPriceDto,

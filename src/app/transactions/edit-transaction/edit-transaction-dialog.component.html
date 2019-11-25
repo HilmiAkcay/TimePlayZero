@@ -1,0 +1,68 @@
+<form autocomplete="off" #editRoleForm="ngForm" (ngSubmit)="save()">
+    <mat-dialog-content style="width:640px;height:300px;">
+        <div class="col-md-6">
+            <mat-form-field>
+                <input matInput name="itemCode" [placeholder]="'ItemCode' | localize" [(ngModel)]="tran.itemPriceCode" required />
+                <button mat-icon-button matSuffix>
+                    <mat-icon>search</mat-icon>
+                </button>
+            </mat-form-field>
+
+        </div>
+        <div class="col-md-6">
+            <mat-form-field>
+                <input matInput name="description" [placeholder]="'description' | localize" [(ngModel)]="tran.description" required />
+            </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+            <mat-form-field>
+                <input matInput [placeholder]="l('Customer')" [(ngModel)]="tran.customerName" name="customerId">
+                <button mat-icon-button matSuffix>
+                    <mat-icon>search</mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6">
+            <mat-form-field>
+                <input matInput [placeholder]="l('PhoneNumber')" [(ngModel)]="tran.phoneNumber" name="phoneNumber">
+            </mat-form-field>
+        </div>
+
+        <div class="col-md-6 ">
+            <mat-form-field>
+                <input matInput type="time" [placeholder]="l('StartTime')" [(ngModel)]="tran.startTime" name="startTime">
+            </mat-form-field>
+        </div>
+        <div class="col-md-6  ">
+            <mat-form-field>
+                <input matInput type="time" [placeholder]="l('EndTime')" [(ngModel)]="tran.endTime" name="endTime">
+            </mat-form-field>
+        </div>
+        <div class="col-md-12">
+            <mat-form-field>
+                <input matInput [placeholder]="l('Price')" [(ngModel)]="tran.price" name="price">
+            </mat-form-field>
+        </div>
+        <div class="col-md-12">
+            <mat-form-field>
+                <input matInput [placeholder]="l('Reason')" [(ngModel)]="tran.reason" name="reason" required>
+            </mat-form-field>
+        </div>
+
+
+    </mat-dialog-content>
+
+    <div mat-dialog-actions align="end">
+        <button mat-button type="button" [disabled]="saving" (click)="close(false)">
+            {{ "Cancel" | localize }}
+        </button>
+        <button mat-flat-button
+                type="submit"
+                flex="15"
+                color="primary"
+                [disabled]="!editRoleForm.form.valid || saving">
+            {{ "Save" | localize }}
+        </button>
+    </div>
+</form>

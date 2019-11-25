@@ -58,6 +58,8 @@ import { EditCustomerDialogComponent } from './customers/edit-customer/edit-cust
 
 //Transaction
 import { TransactionsComponent } from './transactions/transactions.component';
+import { EditTransactionDialogComponent } from './transactions/edit-transaction/edit-transaction-dialog.component';
+
 
 @NgModule({
     declarations: [
@@ -106,6 +108,7 @@ import { TransactionsComponent } from './transactions/transactions.component';
 
         //Transactions
         TransactionsComponent,
+        EditTransactionDialogComponent,
       
     ],
     imports: [
@@ -147,6 +150,9 @@ import { TransactionsComponent } from './transactions/transactions.component';
         //customers
         CreateCustomerDialogComponent,
         EditCustomerDialogComponent,
+
+        //Transaction
+        EditTransactionDialogComponent
     ]
 })
 export class AppModule { }
