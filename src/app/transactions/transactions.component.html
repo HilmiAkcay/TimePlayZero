@@ -9,7 +9,7 @@
                             <div class="col-md-2 col-sm-3">
                                 <mat-form-field>
                                     <input matInput [placeholder]="l('ItemCode')" [(ngModel)]="transaction.itemPriceCode" name="itemPriceCode" (focusout)="focusOutFunction()">
-                                    <button mat-icon-button matSuffix>
+                                    <button mat-icon-button matSuffix (click)="showSearchItemDialog(transaction.itemPriceCode)">
                                         <mat-icon>search</mat-icon>
                                     </button>
                                 </mat-form-field>

@@ -39,6 +39,7 @@ import { EditItemGroupDialogComponent } from './itemGroups/edit-itemGroup/edit-i
 import { ItemsComponent } from '@app/items/items.component';
 import { CreateItemDialogComponent } from './items/create-item/create-item-dialog.component';
 import { EditItemDialogComponent } from './items/edit-item/edit-item-dialog.component';
+import { SearchItemsDialogComponent } from './items/search-item/search-item-dialog.component';
 // users
 import { UsersComponent } from '@app/users/users.component';
 import { CreateUserDialogComponent } from '@app/users/create-user/create-user-dialog.component';
@@ -95,6 +96,7 @@ import { EditTransactionDialogComponent } from './transactions/edit-transaction/
         ItemsComponent,
         CreateItemDialogComponent,
         EditItemDialogComponent,
+        SearchItemsDialogComponent,
 
         //CustomerGroup
         CustomerGroupsComponent,
@@ -142,6 +144,7 @@ import { EditTransactionDialogComponent } from './transactions/edit-transaction/
         // items
         CreateItemDialogComponent,
         EditItemDialogComponent,
+        SearchItemsDialogComponent,
 
         //customerGroups
         CreateCustomerGroupDialogComponent,

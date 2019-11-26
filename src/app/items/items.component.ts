@@ -10,7 +10,7 @@ import {
     ItemServiceProxy,
     ItemDto,
     PagedResultDtoOfItemDto
-   
+
 } from '@shared/service-proxies/service-proxies';
 import { CreateItemDialogComponent } from './create-item/create-item-dialog.component';
 import { EditItemDialogComponent } from './edit-item/edit-item-dialog.component';
@@ -107,4 +107,6 @@ export class ItemsComponent extends PagedListingComponentBase<ItemDto> {
             }
         });
     }
+
+   
 }

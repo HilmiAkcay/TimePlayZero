@@ -11,10 +11,12 @@ import {
     TransactionDto,
     PagedResultDtoOfTransactionDto,    CreateTransactionDto,
     ItemServiceProxy,
+    CombinedItemDto,
 
 } from '@shared/service-proxies/service-proxies';
 import { debug } from 'util';
 import { EditTransactionDialogComponent } from './edit-transaction/edit-transaction-dialog.component';
+import { SearchItemsDialogComponent } from './../items/search-item/search-item-dialog.component';
 //import { CreateItemDialogComponent } from './create-item/create-item-dialog.component';
 //import { EditItemDialogComponent } from './edit-item/edit-item-dialog.component';
 
@@ -163,7 +165,6 @@ export class TransactionsComponent extends PagedListingComponentBase<Transaction
         var ind = this.trans.indexOf(e);
         var tranDto = e;
         tranDto.state = 1;
-        debugger;
         this._tranService.finishItem(tranDto.id).subscribe((result: void) => {
 
             this.trans.splice(ind, 1);
@@ -186,6 +187,20 @@ export class TransactionsComponent extends PagedListingComponentBase<Transaction
         createOrEditItemDialog.afterClosed().subscribe(result => {
             if (result) {
                 this.refresh();
+            }
+        });
+    }
+
+    showSearchItemDialog(filter: string): void {
+        let searchDialog;
+        {
+            searchDialog = this._dialog.open(SearchItemsDialogComponent, { data: filter });
+        }
+
+        searchDialog.afterClosed().subscribe(result => {
+            if (result) {
+                this.transaction.itemPriceCode = result.priceCode;
+                this.focusOutFunction();
             }
         });
     }
