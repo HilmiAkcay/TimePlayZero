@@ -56,6 +56,7 @@ import { EditCustomerGroupDialogComponent } from './customerGroups/edit-customer
 import { CustomersComponent } from './customers/customers.component';
 import { CreateCustomerDialogComponent } from './customers/create-customer/create-customer-dialog.component';
 import { EditCustomerDialogComponent } from './customers/edit-customer/edit-customer-dialog.component';
+import { SearchCustomerDialogComponent } from './customers/search-customer/search-customer-dialog.component';
 
 //Transaction
 import { TransactionsComponent } from './transactions/transactions.component';
@@ -107,6 +108,7 @@ import { EditTransactionDialogComponent } from './transactions/edit-transaction/
         CustomersComponent,
         CreateCustomerDialogComponent,
         EditCustomerDialogComponent,
+        SearchCustomerDialogComponent,
 
         //Transactions
         TransactionsComponent,
@@ -153,6 +155,7 @@ import { EditTransactionDialogComponent } from './transactions/edit-transaction/
         //customers
         CreateCustomerDialogComponent,
         EditCustomerDialogComponent,
+        SearchCustomerDialogComponent,
 
         //Transaction
         EditTransactionDialogComponent

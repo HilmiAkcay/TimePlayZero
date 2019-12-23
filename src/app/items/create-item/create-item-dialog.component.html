@@ -1,6 +1,6 @@
 <form autocomplete="off" #createItemForm="ngForm" (ngSubmit)="save()">
     <!--<h1 mat-dialog-title>{{ "CreateNewItem" | localize }}</h1>-->
-    <mat-dialog-content style="width:600px;height:300px;">
+    <mat-dialog-content style="width:700px;height:300px;">
         <mat-tab-group>
             <mat-tab [label]="'CreateNewItem' | localize">
                 <div class="row-fluid">
@@ -15,8 +15,7 @@
                                    maxlength="32" />
                         </mat-form-field>
                         <mat-form-field>
-                            <mat-select name="option" required [placeholder]="'Type' | localize"
-                                        [(ngModel)]="item.type">
+                            <mat-select name="option" required [placeholder]="'Type' | localize" [(ngModel)]="item.type">
                                 <mat-option *ngFor="let x of itemTypes" [value]="x.id">
                                     {{x.value}}
                                 </mat-option>
@@ -29,6 +28,13 @@
                                     {{x.name}}
                                 </mat-option>
                             </mat-select>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input matInput
+                                   name="Code"
+                                   [placeholder]="'Code' | localize"
+                                   [(ngModel)]="item.unlimitedItemCode"
+                                   maxlength="32" />
                         </mat-form-field>
 
                     </div>
@@ -43,8 +49,8 @@
                             <tr>
                                 <th>{{ "Code" | localize }}</th>
                                 <th>{{ "Price" | localize }}</th>
-                                <th>{{ "BufferTime" | localize }}</th>
-                                <th>{{ "Period" | localize }}</th>
+                                <th>{{ "BufferDuration" | localize }}</th>
+                                <th>{{ "Duration" | localize }}</th>
                                 <th>{{ "Actions" | localize }}</th>
                             </tr>
                         </thead>
@@ -79,22 +85,20 @@
                                 </td>
                                 <td>
                                     <input matInput
-                                           name="BufferTime_{{prc.uniqueId}}"
-                                           [placeholder]="'BufferTime' | localize"
-                                           [(ngModel)]="prc.bufferTimePeriod"
-                                           required
+                                           name="BufferDuration_{{prc.uniqueId}}"
+                                           [placeholder]="'BufferPeriod' | localize"
+                                           [(ngModel)]="prc.bufferDuration"
                                            type="number"
-                                           minlength="1"
+                                           required
                                            maxlength="10" />
                                 </td>
                                 <td>
                                     <input matInput
-                                           name="Period_{{prc.uniqueId}}"
-                                           [placeholder]="'Period' | localize"
-                                           [(ngModel)]="prc.timePeriod"
+                                           name="Duration_{{prc.uniqueId}}"
+                                           [placeholder]="'Duration' | localize"
+                                           [(ngModel)]="prc.duration"
                                            required
                                            type="number"
-                                           minlength="1"
                                            maxlength="10" />
                                 </td>
                                 <td>
@@ -116,7 +120,7 @@
                         </tbody>
                     </table>
 
-                    <button  mat-mini-fab color="primary" class="pull-right" (click)="createItemPrice(); $event.preventDefault()">
+                    <button mat-mini-fab color="primary" class="pull-right" (click)="createItemPrice(); $event.preventDefault()">
                         <mat-icon>add</mat-icon>
                     </button>
 

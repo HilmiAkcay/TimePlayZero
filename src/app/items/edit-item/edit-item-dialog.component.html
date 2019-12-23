@@ -30,6 +30,13 @@
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
+                    <mat-form-field>
+                        <input matInput
+                               name="Code"
+                               [placeholder]="'Code' | localize"
+                               [(ngModel)]="item.unlimitedItemCode"
+                               maxlength="32" />
+                    </mat-form-field>
                 </div>
             </mat-tab>
             <mat-tab [label]="'Price'|localize" *ngIf="item.type != 0">
@@ -40,8 +47,8 @@
                             <tr>
                                 <th>{{ "Code" | localize }}</th>
                                 <th>{{ "Price" | localize }}</th>
-                                <th>{{ "BufferTime" | localize }}</th>
-                                <th>{{ "Period" | localize }}</th>
+                                <th>{{ "BufferDuration" | localize }}</th>
+                                <th>{{ "Duration" | localize }}</th>
                                 <th>{{ "Actions" | localize }}</th>
                             </tr>
                         </thead>
@@ -77,22 +84,20 @@
                                 </td>
                                 <td>
                                     <input matInput
-                                           name="BufferTime_{{prc.uniqueId}}"
-                                           [placeholder]="'BufferTime' | localize"
-                                           [(ngModel)]="prc.bufferTimePeriod"
-                                           required
+                                           name="BufferDuration_{{prc.uniqueId}}"
+                                           [placeholder]="'BufferDuration' | localize"
+                                           [(ngModel)]="prc.bufferDuration"
                                            type="number"
-                                           minlength="1"
+                                           required
                                            maxlength="10" />
                                 </td>
                                 <td>
                                     <input matInput
-                                           name="Period_{{prc.uniqueId}}"
-                                           [placeholder]="'Period' | localize"
-                                           [(ngModel)]="prc.timePeriod"
+                                           name="Duration_{{prc.uniqueId}}"
+                                           [placeholder]="'Duration' | localize"
+                                           [(ngModel)]="prc.duration"
                                            required
                                            type="number"
-                                           minlength="1"
                                            maxlength="10" />
                                 </td>
                                 <td class="deleteButton">

@@ -10,7 +10,7 @@ import {
     CustomerServiceProxy,
     CustomerDto,
     PagedResultDtoOfCustomerDto
-   
+
 } from '@shared/service-proxies/service-proxies';
 import { CreateCustomerDialogComponent } from './create-customer/create-customer-dialog.component';
 import { EditCustomerDialogComponent } from './edit-customer/edit-customer-dialog.component';
@@ -57,7 +57,7 @@ export class CustomersComponent extends PagedListingComponentBase<CustomerDto> {
                 finalize(() => {
                     finishedCallback();
                 })
-        )
+            )
             .subscribe((result: PagedResultDtoOfCustomerDto) => {
                 this.customers = result.items;
                 this.showPaging(result, pageNumber);

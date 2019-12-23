@@ -4,7 +4,7 @@ import {
     MAT_DIALOG_DATA,
     MatCheckboxChange
 } from '@angular/material';
-import { finalize } from 'rxjs/operators';
+import { finalize, retry } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { AppComponentBase } from '@shared/app-component-base';
 import {
@@ -83,5 +83,14 @@ export class EditTransactionDialogComponent extends AppComponentBase
 
     close(result: any): void {
         this._dialogRef.close(result);
+    }
+
+    getColor(tran: TransactionDto): string {
+        if (tran.isExpired)
+            return "red";
+        if (tran.timeLeft <= tran.bufferDuration)
+            return "warn";
+        else
+            return "white";
     }
 }

@@ -1,3 +1,5 @@
+
+
 <div class="row clearfix" [@routerTransition]>
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="card main-content">
@@ -8,17 +10,17 @@
                         <form>
                             <div class="col-md-2 col-sm-3">
                                 <mat-form-field>
-                                    <input matInput [placeholder]="l('ItemCode')" [(ngModel)]="transaction.itemPriceCode" name="itemPriceCode" (focusout)="focusOutFunction()">
-                                    <button mat-icon-button matSuffix (click)="showSearchItemDialog(transaction.itemPriceCode)">
+                                    <input matInput [placeholder]="l('ItemCode')" [(ngModel)]="transaction.itemPriceCode" name="itemPriceCode" (keyup.enter)="showSearchItemDialog(transaction.itemPriceCode)" (focusout)="focusOutFunction()">
+                                    <button mat-icon-button matSuffix (click)="showSearchItemDialog(transaction.itemPriceCode)" name="btnIntePriceCode" type="button">
                                         <mat-icon>search</mat-icon>
                                     </button>
                                 </mat-form-field>
                             </div>
 
-                            <div class="col-md-2 col-sm-3">
+                            <div class="col-md-3 col-sm-3">
                                 <mat-form-field>
-                                    <input matInput [placeholder]="l('Customer')" [(ngModel)]="transaction.customerName" name="customerId">
-                                    <button mat-icon-button matSuffix>
+                                    <input matInput [placeholder]="l('Customer')" [(ngModel)]="transaction.customerName" name="customerId" (keyup.enter)="showSearchCustomerDialog(transaction.customerName)" (focusout)="focusOutCustomerFunction()">
+                                    <button mat-icon-button matSuffix (click)="showSearchCustomerDialog(transaction.customerName)" type="button">
                                         <mat-icon>search</mat-icon>
                                     </button>
                                 </mat-form-field>
@@ -30,22 +32,17 @@
                             </div>
                             <div class="col-md-2  col-sm-3">
                                 <mat-form-field>
-                                    <input matInput type="time" [placeholder]="l('StartTime')" [(ngModel)]="transaction.startTime" name="startTime">
+                                    <input matInput [placeholder]="l('Duration')" [(ngModel)]="transaction.durationStr" name="duration">
                                 </mat-form-field>
                             </div>
                             <div class="col-md-2  col-sm-3">
-                                <mat-form-field>
-                                    <input matInput type="time" [placeholder]="l('EndTime')" [(ngModel)]="transaction.endTime" name="endTime">
-                                </mat-form-field>
-                            </div>
-                            <div class="col-md-1  col-sm-3">
                                 <mat-form-field>
                                     <input matInput [placeholder]="l('Price')" [(ngModel)]="transaction.price" name="price">
                                 </mat-form-field>
                             </div>
 
                             <div class="col-md-1  col-sm-3 align-middle" style="padding:20px;">
-                                <button class="buttonHeader" mat-raised-button color="primary" (click)="createTransaction()">
+                                <button class="buttonHeader" mat-raised-button color="primary" (click)="createTransaction()" type="button">
                                     <mat-icon>add</mat-icon>
                                 </button>
                             </div>
@@ -57,49 +54,66 @@
         <div class="overflow-auto">
             <div class="row" style="height:100%; overflow-y:scroll">
                 <div *ngFor="let tran of trans" class=" col-md-3 col-sm-4 p-b-15">
-                    <div class="wrapper ">
-                        <mat-card class="card " [ngStyle]="{'background-color': tran.color}">
-                          
-                                <div class="row">
-                                    <div class="col-md-12 m-b-10">
-                                        {{tran.description}}
-                                    </div>
+                    <div class="wrapper">
+                        <mat-card class="card ">
+
+                            <div class="row">
+                                <div class="col-md-12 m-b-10">
+                                    {{tran.description}} ( {{tran.durationStr}} {{"Minute" | localize }})
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 m-b-10">
+                                    {{tran.customerInfo}}
+                                </div>
+                            </div>
+                            <div class="row m-b-10 ">
+                                <div class="col-md-6 ">
+                                    {{ "Elapsed" | localize }} {{tran.timeElapsed}} {{"Minute" | localize }}
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-12 m-b-10">
-                                        {{tran.customerInfo}}
-                                    </div>
+                                <div class="col-md-6 align-right" *ngIf="tran.isUnlimited == false">
+                                    {{ "Rest" | localize }} {{tran.timeLeft}} {{"Minute" | localize }}
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-8 m-b-10">
-                                        {{tran.startTime}} - {{tran.endTime}}
-                                    </div>
-                                    <div class="col-md-48 m-b-10 m-r-10 align-right">
-                                        Kalan {{tran.timeLeft}} dk.
-                                    </div>
+
+                            </div>
+                            <div class="row m-b-10">
+                                <div class="col-md-6 font-bold">
+                                    {{tran.totalPrice}} TL
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-12 m-b-10 font-bold">
-                                        {{tran.price}} TL
-                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 m-t-10" [style.color]="tran.color">
+                                    <mat-icon class="bell">notifications</mat-icon>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-12 text-right p-r-15">
-                                        <span>
-                                            <button mat-icon-button color="warn" (click)="editItem(tran)">
+                                <div class="col-md-9 text-right p-r-15">
+                                    <span>
+                                        <button mat-icon-button (click)="finishItem(tran)">
+                                            <mat-icon>done_outline</mat-icon>
+                                        </button>
+                                    </span>
+                                    <span>
+                                        <button mat-icon-button [matMenuTriggerFor]="actionsMenu">
+                                            <mat-icon>menu</mat-icon>
+                                        </button>
+                                        <mat-menu #actionsMenu="matMenu">
+                                            <button mat-menu-item (click)="pauseItem(tran)">
+                                                <mat-icon>pause</mat-icon>
+                                                <span>{{ "Pause" | localize }}</span>
+                                            </button>
+                                            <button mat-menu-item (click)="editItem(tran)">
                                                 <mat-icon>edit</mat-icon>
+                                                <span>{{ "Edit" | localize }}</span>
                                             </button>
-                                        </span>
-                                        <span>
-                                            <button mat-icon-button color="warn" (click)="finishItem(tran)">
-                                                <mat-icon>done_outline</mat-icon>
+                                            <button mat-menu-item (click)="delete(item)">
+                                                <mat-icon>delete</mat-icon>
+                                                <span>{{ "Delete" | localize }}</span>
                                             </button>
-                                        </span>
-                                    </div>
+                                        </mat-menu>
+                                    </span>
                                 </div>
-                       
-
+                            </div>
                         </mat-card>
                     </div>
                 </div>
@@ -112,3 +126,308 @@
 </div>
 
 
+<style>
+    .bell {
+        display: block;
+        -webkit-animation: ring 4s .7s ease-in-out infinite;
+        -webkit-transform-origin: 50% 4px;
+        -moz-animation: ring 4s .7s ease-in-out infinite;
+        -moz-transform-origin: 50% 4px;
+        animation: ring 4s .7s ease-in-out infinite;
+        transform-origin: 50% 4px;
+    }
+
+    @-webkit-keyframes ring {
+        0% {
+            -webkit-transform: rotateZ(0);
+        }
+
+        1% {
+            -webkit-transform: rotateZ(30deg);
+        }
+
+        3% {
+            -webkit-transform: rotateZ(-28deg);
+        }
+
+        5% {
+            -webkit-transform: rotateZ(34deg);
+        }
+
+        7% {
+            -webkit-transform: rotateZ(-32deg);
+        }
+
+        9% {
+            -webkit-transform: rotateZ(30deg);
+        }
+
+        11% {
+            -webkit-transform: rotateZ(-28deg);
+        }
+
+        13% {
+            -webkit-transform: rotateZ(26deg);
+        }
+
+        15% {
+            -webkit-transform: rotateZ(-24deg);
+        }
+
+        17% {
+            -webkit-transform: rotateZ(22deg);
+        }
+
+        19% {
+            -webkit-transform: rotateZ(-20deg);
+        }
+
+        21% {
+            -webkit-transform: rotateZ(18deg);
+        }
+
+        23% {
+            -webkit-transform: rotateZ(-16deg);
+        }
+
+        25% {
+            -webkit-transform: rotateZ(14deg);
+        }
+
+        27% {
+            -webkit-transform: rotateZ(-12deg);
+        }
+
+        29% {
+            -webkit-transform: rotateZ(10deg);
+        }
+
+        31% {
+            -webkit-transform: rotateZ(-8deg);
+        }
+
+        33% {
+            -webkit-transform: rotateZ(6deg);
+        }
+
+        35% {
+            -webkit-transform: rotateZ(-4deg);
+        }
+
+        37% {
+            -webkit-transform: rotateZ(2deg);
+        }
+
+        39% {
+            -webkit-transform: rotateZ(-1deg);
+        }
+
+        41% {
+            -webkit-transform: rotateZ(1deg);
+        }
+
+        43% {
+            -webkit-transform: rotateZ(0);
+        }
+
+        100% {
+            -webkit-transform: rotateZ(0);
+        }
+    }
+
+    @-moz-keyframes ring {
+        0% {
+            -moz-transform: rotate(0);
+        }
+
+        1% {
+            -moz-transform: rotate(30deg);
+        }
+
+        3% {
+            -moz-transform: rotate(-28deg);
+        }
+
+        5% {
+            -moz-transform: rotate(34deg);
+        }
+
+        7% {
+            -moz-transform: rotate(-32deg);
+        }
+
+        9% {
+            -moz-transform: rotate(30deg);
+        }
+
+        11% {
+            -moz-transform: rotate(-28deg);
+        }
+
+        13% {
+            -moz-transform: rotate(26deg);
+        }
+
+        15% {
+            -moz-transform: rotate(-24deg);
+        }
+
+        17% {
+            -moz-transform: rotate(22deg);
+        }
+
+        19% {
+            -moz-transform: rotate(-20deg);
+        }
+
+        21% {
+            -moz-transform: rotate(18deg);
+        }
+
+        23% {
+            -moz-transform: rotate(-16deg);
+        }
+
+        25% {
+            -moz-transform: rotate(14deg);
+        }
+
+        27% {
+            -moz-transform: rotate(-12deg);
+        }
+
+        29% {
+            -moz-transform: rotate(10deg);
+        }
+
+        31% {
+            -moz-transform: rotate(-8deg);
+        }
+
+        33% {
+            -moz-transform: rotate(6deg);
+        }
+
+        35% {
+            -moz-transform: rotate(-4deg);
+        }
+
+        37% {
+            -moz-transform: rotate(2deg);
+        }
+
+        39% {
+            -moz-transform: rotate(-1deg);
+        }
+
+        41% {
+            -moz-transform: rotate(1deg);
+        }
+
+        43% {
+            -moz-transform: rotate(0);
+        }
+
+        100% {
+            -moz-transform: rotate(0);
+        }
+    }
+
+    @keyframes ring {
+        0% {
+            transform: rotate(0);
+        }
+
+        1% {
+            transform: rotate(30deg);
+        }
+
+        3% {
+            transform: rotate(-28deg);
+        }
+
+        5% {
+            transform: rotate(34deg);
+        }
+
+        7% {
+            transform: rotate(-32deg);
+        }
+
+        9% {
+            transform: rotate(30deg);
+        }
+
+        11% {
+            transform: rotate(-28deg);
+        }
+
+        13% {
+            transform: rotate(26deg);
+        }
+
+        15% {
+            transform: rotate(-24deg);
+        }
+
+        17% {
+            transform: rotate(22deg);
+        }
+
+        19% {
+            transform: rotate(-20deg);
+        }
+
+        21% {
+            transform: rotate(18deg);
+        }
+
+        23% {
+            transform: rotate(-16deg);
+        }
+
+        25% {
+            transform: rotate(14deg);
+        }
+
+        27% {
+            transform: rotate(-12deg);
+        }
+
+        29% {
+            transform: rotate(10deg);
+        }
+
+        31% {
+            transform: rotate(-8deg);
+        }
+
+        33% {
+            transform: rotate(6deg);
+        }
+
+        35% {
+            transform: rotate(-4deg);
+        }
+
+        37% {
+            transform: rotate(2deg);
+        }
+
+        39% {
+            transform: rotate(-1deg);
+        }
+
+        41% {
+            transform: rotate(1deg);
+        }
+
+        43% {
+            transform: rotate(0);
+        }
+
+        100% {
+            transform: rotate(0);
+        }
+    }
+</style>

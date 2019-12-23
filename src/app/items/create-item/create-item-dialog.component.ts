@@ -16,7 +16,8 @@ import {
     PermissionDto,
     CreateItemDto,    ItemGroupServiceProxy,
     ItemGroupDto,
-    PagedResultDtoOfItemGroupDto
+    PagedResultDtoOfItemGroupDto,
+    CreateItemPriceDto
 } from '@shared/service-proxies/service-proxies';
 
 export interface ItemType {
@@ -42,7 +43,7 @@ export class CreateItemDialogComponent extends AppComponentBase
     saving = false;
     isHidden = true;
     item: ItemDto = new ItemDto();
-    ItemPrices: ItemPriceDto[] = [];
+    ItemPrices: CreateItemPriceDto[] = [];
     itemGroups: ItemGroupDto[] = [];
     permissions: PermissionDto[] = [];
     grantedPermissionNames: string[] = [];
@@ -77,16 +78,6 @@ export class CreateItemDialogComponent extends AppComponentBase
                 this.itemGroups = result.items;
 
             });
-
-        //const priceDto = new ItemPriceDto();
-        //priceDto.price = 3;
-        //this.ItemPrices.push(priceDto);
-        //this._itemService
-        //  .getAllPermissions()
-        //  .subscribe((result: ListResultDtoOfPermissionDto) => {
-        //    this.permissions = result.items;
-        //    this.setInitialPermissionsStatus();
-        //  });
     }
 
     setInitialPermissionsStatus(): void {
@@ -123,7 +114,7 @@ export class CreateItemDialogComponent extends AppComponentBase
         //this.role.grantedPermissions = this.getCheckedPermissions();
         debugger;
         const item_ = new CreateItemDto();
-        
+
         item_.init(this.item);
         item_.itemPrices = this.ItemPrices;
 
@@ -145,7 +136,7 @@ export class CreateItemDialogComponent extends AppComponentBase
     }
 
     createItemPrice(): void {
-        const itemPrice = new ItemPriceDto();
+        const itemPrice = new CreateItemPriceDto();
         itemPrice.uniqueId = Math.random().toString();
         this.ItemPrices.push(itemPrice);
     }

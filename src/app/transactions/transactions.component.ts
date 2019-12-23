@@ -17,6 +17,7 @@ import {
 import { debug } from 'util';
 import { EditTransactionDialogComponent } from './edit-transaction/edit-transaction-dialog.component';
 import { SearchItemsDialogComponent } from './../items/search-item/search-item-dialog.component';
+import { SearchCustomerDialogComponent } from '../customers/search-customer/search-customer-dialog.component';
 //import { CreateItemDialogComponent } from './create-item/create-item-dialog.component';
 //import { EditItemDialogComponent } from './edit-item/edit-item-dialog.component';
 
@@ -66,7 +67,7 @@ export class TransactionsComponent extends PagedListingComponentBase<Transaction
         this.refreshData();
         this.interval = setInterval(() => {
             this.refreshData();
-        }, 15000);
+        }, 50000);
     }
 
     ngOnDestroy() {
@@ -143,8 +144,22 @@ export class TransactionsComponent extends PagedListingComponentBase<Transaction
                 )
                 .subscribe((result: CreateTransactionDto) => {
 
-                    this.transaction = result;
+                    this.transaction.bufferDuration = result.bufferDuration;
+                    this.transaction.description = result.description;
+                    this.transaction.itemPriceCode = result.itemPriceCode;
+                    this.transaction.itemPriceId = result.itemPriceId;
+                    this.transaction.price = result.price;
+                    this.transaction.duration = result.duration;
+                    this.transaction.state = result.state;
+                    this.transaction.durationStr = result.durationStr;
+                    this.transaction.isUnlimited = result.isUnlimited;
                 });
+        }
+    }
+
+    focusOutCustomerFunction(): void {
+        if (this.transaction.customerName !== "") {
+
         }
     }
 
@@ -192,6 +207,7 @@ export class TransactionsComponent extends PagedListingComponentBase<Transaction
     }
 
     showSearchItemDialog(filter: string): void {
+        debugger;
         let searchDialog;
         {
             searchDialog = this._dialog.open(SearchItemsDialogComponent, { data: filter });
@@ -203,6 +219,21 @@ export class TransactionsComponent extends PagedListingComponentBase<Transaction
                 this.focusOutFunction();
             }
         });
+    }
+
+    showSearchCustomerDialog(filter: string): void {
+        debugger;
+        let customerDialog;
+        {
+            customerDialog = this._dialog.open(SearchCustomerDialogComponent, { data: filter });
+        }
+        customerDialog.afterClosed().subscribe(result => {
+            if (result) {
+                this.transaction.customerName = result.firstName + " " + result.lastName;
+                this.transaction.phoneNumber = result.phoneNumber;
+                this.transaction.customerId = result.id;
+            }
+        })
     }
 
 

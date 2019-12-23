@@ -275,6 +275,64 @@ export class CustomerServiceProxy {
     }
 
     /**
+     * @param searchTerm (optional) 
+     * @return Success
+     */
+    searchCustomer(searchTerm: string | null | undefined): Observable<CustomerDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Customer/SearchCustomer?";
+        if (searchTerm !== undefined)
+            url_ += "searchTerm=" + encodeURIComponent("" + searchTerm) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSearchCustomer(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSearchCustomer(<any>response_);
+                } catch (e) {
+                    return <Observable<CustomerDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CustomerDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processSearchCustomer(response: HttpResponseBase): Observable<CustomerDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [];
+                for (let item of resultData200)
+                    result200.push(CustomerDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CustomerDto[]>(<any>null);
+    }
+
+    /**
      * @param id (optional) 
      * @return Success
      */
@@ -791,6 +849,60 @@ export class ItemServiceProxy {
     }
 
     /**
+     * @param id (optional) 
+     * @return Success
+     */
+    get(id: number | null | undefined): Observable<ItemDto> {
+        let url_ = this.baseUrl + "/api/services/app/Item/Get?";
+        if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGet(<any>response_);
+                } catch (e) {
+                    return <Observable<ItemDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ItemDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGet(response: HttpResponseBase): Observable<ItemDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ItemDto.fromJS(resultData200) : new ItemDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ItemDto>(<any>null);
+    }
+
+    /**
      * @param input (optional) 
      * @return Success
      */
@@ -1018,60 +1130,6 @@ export class ItemServiceProxy {
             }));
         }
         return _observableOf<CombinedItemDto[]>(<any>null);
-    }
-
-    /**
-     * @param id (optional) 
-     * @return Success
-     */
-    get(id: number | null | undefined): Observable<ItemDto> {
-        let url_ = this.baseUrl + "/api/services/app/Item/Get?";
-        if (id !== undefined)
-            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGet(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGet(<any>response_);
-                } catch (e) {
-                    return <Observable<ItemDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<ItemDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGet(response: HttpResponseBase): Observable<ItemDto> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ItemDto.fromJS(resultData200) : new ItemDto();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<ItemDto>(<any>null);
     }
 
     /**
@@ -2910,6 +2968,56 @@ export class TransactionServiceProxy {
     }
 
     /**
+     * @param transactionId (optional) 
+     * @return Success
+     */
+    startStopTransaction(transactionId: number | null | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Transaction/StartStopTransaction?";
+        if (transactionId !== undefined)
+            url_ += "transactionId=" + encodeURIComponent("" + transactionId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processStartStopTransaction(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processStartStopTransaction(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processStartStopTransaction(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
      * @param code (optional) 
      * @return Success
      */
@@ -4239,133 +4347,12 @@ export interface IPagedResultDtoOfCustomerGroupDto {
     items: CustomerGroupDto[] | undefined;
 }
 
-export class CreateItemDto implements ICreateItemDto {
-    name: string | undefined;
-    type: number | undefined;
-    itemGroupId: number | undefined;
-    itemPrices: CreateItemPriceDto[] | undefined;
-
-    constructor(data?: ICreateItemDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.name = data["name"];
-            this.type = data["type"];
-            this.itemGroupId = data["itemGroupId"];
-            if (data["itemPrices"] && data["itemPrices"].constructor === Array) {
-                this.itemPrices = [];
-                for (let item of data["itemPrices"])
-                    this.itemPrices.push(CreateItemPriceDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): CreateItemDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateItemDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["type"] = this.type;
-        data["itemGroupId"] = this.itemGroupId;
-        if (this.itemPrices && this.itemPrices.constructor === Array) {
-            data["itemPrices"] = [];
-            for (let item of this.itemPrices)
-                data["itemPrices"].push(item.toJSON());
-        }
-        return data; 
-    }
-
-    clone(): CreateItemDto {
-        const json = this.toJSON();
-        let result = new CreateItemDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ICreateItemDto {
-    name: string | undefined;
-    type: number | undefined;
-    itemGroupId: number | undefined;
-    itemPrices: CreateItemPriceDto[] | undefined;
-}
-
-export class CreateItemPriceDto implements ICreateItemPriceDto {
-    code: string | undefined;
-    price: number | undefined;
-    bufferTimePeriod: number | undefined;
-    timePeriod: number | undefined;
-    itemId: number | undefined;
-
-    constructor(data?: ICreateItemPriceDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.code = data["code"];
-            this.price = data["price"];
-            this.bufferTimePeriod = data["bufferTimePeriod"];
-            this.timePeriod = data["timePeriod"];
-            this.itemId = data["itemId"];
-        }
-    }
-
-    static fromJS(data: any): CreateItemPriceDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateItemPriceDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["code"] = this.code;
-        data["price"] = this.price;
-        data["bufferTimePeriod"] = this.bufferTimePeriod;
-        data["timePeriod"] = this.timePeriod;
-        data["itemId"] = this.itemId;
-        return data; 
-    }
-
-    clone(): CreateItemPriceDto {
-        const json = this.toJSON();
-        let result = new CreateItemPriceDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ICreateItemPriceDto {
-    code: string | undefined;
-    price: number | undefined;
-    bufferTimePeriod: number | undefined;
-    timePeriod: number | undefined;
-    itemId: number | undefined;
-}
-
 export class ItemDto implements IItemDto {
     name: string | undefined;
     type: number | undefined;
     itemGroupId: number | undefined;
     itemGroupName: string | undefined;
+    unlimitedItemCode: string | undefined;
     typeName: string | undefined;
     creationTime: moment.Moment | undefined;
     isDeleted: boolean | undefined;
@@ -4387,6 +4374,7 @@ export class ItemDto implements IItemDto {
             this.type = data["type"];
             this.itemGroupId = data["itemGroupId"];
             this.itemGroupName = data["itemGroupName"];
+            this.unlimitedItemCode = data["unlimitedItemCode"];
             this.typeName = data["typeName"];
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
             this.isDeleted = data["isDeleted"];
@@ -4408,6 +4396,7 @@ export class ItemDto implements IItemDto {
         data["type"] = this.type;
         data["itemGroupId"] = this.itemGroupId;
         data["itemGroupName"] = this.itemGroupName;
+        data["unlimitedItemCode"] = this.unlimitedItemCode;
         data["typeName"] = this.typeName;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
         data["isDeleted"] = this.isDeleted;
@@ -4429,11 +4418,146 @@ export interface IItemDto {
     type: number | undefined;
     itemGroupId: number | undefined;
     itemGroupName: string | undefined;
+    unlimitedItemCode: string | undefined;
     typeName: string | undefined;
     creationTime: moment.Moment | undefined;
     isDeleted: boolean | undefined;
     uniqueId: string | undefined;
     id: number | undefined;
+}
+
+export class CreateItemDto implements ICreateItemDto {
+    name: string | undefined;
+    type: number | undefined;
+    itemGroupId: number | undefined;
+    unlimitedItemCode: string | undefined;
+    itemPrices: CreateItemPriceDto[] | undefined;
+
+    constructor(data?: ICreateItemDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.name = data["name"];
+            this.type = data["type"];
+            this.itemGroupId = data["itemGroupId"];
+            this.unlimitedItemCode = data["unlimitedItemCode"];
+            if (data["itemPrices"] && data["itemPrices"].constructor === Array) {
+                this.itemPrices = [];
+                for (let item of data["itemPrices"])
+                    this.itemPrices.push(CreateItemPriceDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): CreateItemDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateItemDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["type"] = this.type;
+        data["itemGroupId"] = this.itemGroupId;
+        data["unlimitedItemCode"] = this.unlimitedItemCode;
+        if (this.itemPrices && this.itemPrices.constructor === Array) {
+            data["itemPrices"] = [];
+            for (let item of this.itemPrices)
+                data["itemPrices"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): CreateItemDto {
+        const json = this.toJSON();
+        let result = new CreateItemDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateItemDto {
+    name: string | undefined;
+    type: number | undefined;
+    itemGroupId: number | undefined;
+    unlimitedItemCode: string | undefined;
+    itemPrices: CreateItemPriceDto[] | undefined;
+}
+
+export class CreateItemPriceDto implements ICreateItemPriceDto {
+    code: string | undefined;
+    price: number | undefined;
+    isUnlimited: boolean | undefined;
+    bufferDuration: number | undefined;
+    duration: number | undefined;
+    itemId: number | undefined;
+    uniqueId: string | undefined;
+
+    constructor(data?: ICreateItemPriceDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.code = data["code"];
+            this.price = data["price"];
+            this.isUnlimited = data["isUnlimited"];
+            this.bufferDuration = data["bufferDuration"];
+            this.duration = data["duration"];
+            this.itemId = data["itemId"];
+            this.uniqueId = data["uniqueId"];
+        }
+    }
+
+    static fromJS(data: any): CreateItemPriceDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateItemPriceDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["code"] = this.code;
+        data["price"] = this.price;
+        data["isUnlimited"] = this.isUnlimited;
+        data["bufferDuration"] = this.bufferDuration;
+        data["duration"] = this.duration;
+        data["itemId"] = this.itemId;
+        data["uniqueId"] = this.uniqueId;
+        return data; 
+    }
+
+    clone(): CreateItemPriceDto {
+        const json = this.toJSON();
+        let result = new CreateItemPriceDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateItemPriceDto {
+    code: string | undefined;
+    price: number | undefined;
+    isUnlimited: boolean | undefined;
+    bufferDuration: number | undefined;
+    duration: number | undefined;
+    itemId: number | undefined;
+    uniqueId: string | undefined;
 }
 
 export class ItemEditDto implements IItemEditDto {
@@ -4442,6 +4566,7 @@ export class ItemEditDto implements IItemEditDto {
     type: number | undefined;
     itemGroupId: number | undefined;
     itemGroupName: string | undefined;
+    unlimitedItemCode: string | undefined;
     typeName: string | undefined;
     creationTime: moment.Moment | undefined;
     isDeleted: boolean | undefined;
@@ -4468,6 +4593,7 @@ export class ItemEditDto implements IItemEditDto {
             this.type = data["type"];
             this.itemGroupId = data["itemGroupId"];
             this.itemGroupName = data["itemGroupName"];
+            this.unlimitedItemCode = data["unlimitedItemCode"];
             this.typeName = data["typeName"];
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
             this.isDeleted = data["isDeleted"];
@@ -4494,6 +4620,7 @@ export class ItemEditDto implements IItemEditDto {
         data["type"] = this.type;
         data["itemGroupId"] = this.itemGroupId;
         data["itemGroupName"] = this.itemGroupName;
+        data["unlimitedItemCode"] = this.unlimitedItemCode;
         data["typeName"] = this.typeName;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
         data["isDeleted"] = this.isDeleted;
@@ -4516,6 +4643,7 @@ export interface IItemEditDto {
     type: number | undefined;
     itemGroupId: number | undefined;
     itemGroupName: string | undefined;
+    unlimitedItemCode: string | undefined;
     typeName: string | undefined;
     creationTime: moment.Moment | undefined;
     isDeleted: boolean | undefined;
@@ -4526,8 +4654,8 @@ export interface IItemEditDto {
 export class ItemPriceDto implements IItemPriceDto {
     code: string | undefined;
     price: number | undefined;
-    bufferTimePeriod: number | undefined;
-    timePeriod: number | undefined;
+    bufferDuration: number | undefined;
+    duration: number | undefined;
     itemId: number | undefined;
     creationTime: moment.Moment | undefined;
     isDeleted: boolean | undefined;
@@ -4547,8 +4675,8 @@ export class ItemPriceDto implements IItemPriceDto {
         if (data) {
             this.code = data["code"];
             this.price = data["price"];
-            this.bufferTimePeriod = data["bufferTimePeriod"];
-            this.timePeriod = data["timePeriod"];
+            this.bufferDuration = data["bufferDuration"];
+            this.duration = data["duration"];
             this.itemId = data["itemId"];
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
             this.isDeleted = data["isDeleted"];
@@ -4568,8 +4696,8 @@ export class ItemPriceDto implements IItemPriceDto {
         data = typeof data === 'object' ? data : {};
         data["code"] = this.code;
         data["price"] = this.price;
-        data["bufferTimePeriod"] = this.bufferTimePeriod;
-        data["timePeriod"] = this.timePeriod;
+        data["bufferDuration"] = this.bufferDuration;
+        data["duration"] = this.duration;
         data["itemId"] = this.itemId;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
         data["isDeleted"] = this.isDeleted;
@@ -4589,8 +4717,8 @@ export class ItemPriceDto implements IItemPriceDto {
 export interface IItemPriceDto {
     code: string | undefined;
     price: number | undefined;
-    bufferTimePeriod: number | undefined;
-    timePeriod: number | undefined;
+    bufferDuration: number | undefined;
+    duration: number | undefined;
     itemId: number | undefined;
     creationTime: moment.Moment | undefined;
     isDeleted: boolean | undefined;
@@ -4657,10 +4785,12 @@ export class CombinedItemDto implements ICombinedItemDto {
     priceCode: string | undefined;
     name: string | undefined;
     price: number | undefined;
-    bufferTime: number | undefined;
-    period: number | undefined;
     itemGroupName: string | undefined;
     typeName: string | undefined;
+    bufferDuration: number | undefined;
+    duration: number | undefined;
+    isUnlimited: boolean | undefined;
+    durationStr: any | undefined;
 
     constructor(data?: ICombinedItemDto) {
         if (data) {
@@ -4676,10 +4806,12 @@ export class CombinedItemDto implements ICombinedItemDto {
             this.priceCode = data["priceCode"];
             this.name = data["name"];
             this.price = data["price"];
-            this.bufferTime = data["bufferTime"];
-            this.period = data["period"];
             this.itemGroupName = data["itemGroupName"];
             this.typeName = data["typeName"];
+            this.bufferDuration = data["bufferDuration"];
+            this.duration = data["duration"];
+            this.isUnlimited = data["isUnlimited"];
+            this.durationStr = data["durationStr"];
         }
     }
 
@@ -4695,10 +4827,12 @@ export class CombinedItemDto implements ICombinedItemDto {
         data["priceCode"] = this.priceCode;
         data["name"] = this.name;
         data["price"] = this.price;
-        data["bufferTime"] = this.bufferTime;
-        data["period"] = this.period;
         data["itemGroupName"] = this.itemGroupName;
         data["typeName"] = this.typeName;
+        data["bufferDuration"] = this.bufferDuration;
+        data["duration"] = this.duration;
+        data["isUnlimited"] = this.isUnlimited;
+        data["durationStr"] = this.durationStr;
         return data; 
     }
 
@@ -4714,10 +4848,12 @@ export interface ICombinedItemDto {
     priceCode: string | undefined;
     name: string | undefined;
     price: number | undefined;
-    bufferTime: number | undefined;
-    period: number | undefined;
     itemGroupName: string | undefined;
     typeName: string | undefined;
+    bufferDuration: number | undefined;
+    duration: number | undefined;
+    isUnlimited: boolean | undefined;
+    durationStr: any | undefined;
 }
 
 export class CreateItemGroupDto implements ICreateItemGroupDto {
@@ -6177,20 +6313,26 @@ export interface IExternalAuthenticateResultModel {
 export class TransactionDto implements ITransactionDto {
     itemPriceCode: string | undefined;
     description: string | undefined;
-    startTime: string | undefined;
-    endTime: string | undefined;
-    price: number | undefined;
+    startDate: moment.Moment | undefined;
+    totalPrice: number | undefined;
     state: number | undefined;
     itemPriceId: number | undefined;
     customerId: number | undefined;
     phoneNumber: string | undefined;
     customerName: string | undefined;
-    bufferTimePeriod: number | undefined;
+    bufferDuration: number | undefined;
+    duration: number | undefined;
+    durationStr: string | undefined;
+    isUnlimited: boolean | undefined;
     color: string | undefined;
     customerInfo: string | undefined;
     timeLeft: number | undefined;
+    timeElapsed: number | undefined;
     isExpired: boolean | undefined;
-    updateNextItem: boolean | undefined;
+    itemType: number | undefined;
+    price: number | undefined;
+    transactionDates: TransactionDate[] | undefined;
+    itemId: number | undefined;
     creationTime: moment.Moment | undefined;
     isDeleted: boolean | undefined;
     uniqueId: string | undefined;
@@ -6209,20 +6351,30 @@ export class TransactionDto implements ITransactionDto {
         if (data) {
             this.itemPriceCode = data["itemPriceCode"];
             this.description = data["description"];
-            this.startTime = data["startTime"];
-            this.endTime = data["endTime"];
-            this.price = data["price"];
+            this.startDate = data["startDate"] ? moment(data["startDate"].toString()) : <any>undefined;
+            this.totalPrice = data["totalPrice"];
             this.state = data["state"];
             this.itemPriceId = data["itemPriceId"];
             this.customerId = data["customerId"];
             this.phoneNumber = data["phoneNumber"];
             this.customerName = data["customerName"];
-            this.bufferTimePeriod = data["bufferTimePeriod"];
+            this.bufferDuration = data["bufferDuration"];
+            this.duration = data["duration"];
+            this.durationStr = data["durationStr"];
+            this.isUnlimited = data["isUnlimited"];
             this.color = data["color"];
             this.customerInfo = data["customerInfo"];
             this.timeLeft = data["timeLeft"];
+            this.timeElapsed = data["timeElapsed"];
             this.isExpired = data["isExpired"];
-            this.updateNextItem = data["updateNextItem"];
+            this.itemType = data["itemType"];
+            this.price = data["price"];
+            if (data["transactionDates"] && data["transactionDates"].constructor === Array) {
+                this.transactionDates = [];
+                for (let item of data["transactionDates"])
+                    this.transactionDates.push(TransactionDate.fromJS(item));
+            }
+            this.itemId = data["itemId"];
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
             this.isDeleted = data["isDeleted"];
             this.uniqueId = data["uniqueId"];
@@ -6241,20 +6393,30 @@ export class TransactionDto implements ITransactionDto {
         data = typeof data === 'object' ? data : {};
         data["itemPriceCode"] = this.itemPriceCode;
         data["description"] = this.description;
-        data["startTime"] = this.startTime;
-        data["endTime"] = this.endTime;
-        data["price"] = this.price;
+        data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
+        data["totalPrice"] = this.totalPrice;
         data["state"] = this.state;
         data["itemPriceId"] = this.itemPriceId;
         data["customerId"] = this.customerId;
         data["phoneNumber"] = this.phoneNumber;
         data["customerName"] = this.customerName;
-        data["bufferTimePeriod"] = this.bufferTimePeriod;
+        data["bufferDuration"] = this.bufferDuration;
+        data["duration"] = this.duration;
+        data["durationStr"] = this.durationStr;
+        data["isUnlimited"] = this.isUnlimited;
         data["color"] = this.color;
         data["customerInfo"] = this.customerInfo;
         data["timeLeft"] = this.timeLeft;
+        data["timeElapsed"] = this.timeElapsed;
         data["isExpired"] = this.isExpired;
-        data["updateNextItem"] = this.updateNextItem;
+        data["itemType"] = this.itemType;
+        data["price"] = this.price;
+        if (this.transactionDates && this.transactionDates.constructor === Array) {
+            data["transactionDates"] = [];
+            for (let item of this.transactionDates)
+                data["transactionDates"].push(item.toJSON());
+        }
+        data["itemId"] = this.itemId;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
         data["isDeleted"] = this.isDeleted;
         data["uniqueId"] = this.uniqueId;
@@ -6273,38 +6435,108 @@ export class TransactionDto implements ITransactionDto {
 export interface ITransactionDto {
     itemPriceCode: string | undefined;
     description: string | undefined;
-    startTime: string | undefined;
-    endTime: string | undefined;
-    price: number | undefined;
+    startDate: moment.Moment | undefined;
+    totalPrice: number | undefined;
     state: number | undefined;
     itemPriceId: number | undefined;
     customerId: number | undefined;
     phoneNumber: string | undefined;
     customerName: string | undefined;
-    bufferTimePeriod: number | undefined;
+    bufferDuration: number | undefined;
+    duration: number | undefined;
+    durationStr: string | undefined;
+    isUnlimited: boolean | undefined;
     color: string | undefined;
     customerInfo: string | undefined;
     timeLeft: number | undefined;
+    timeElapsed: number | undefined;
     isExpired: boolean | undefined;
-    updateNextItem: boolean | undefined;
+    itemType: number | undefined;
+    price: number | undefined;
+    transactionDates: TransactionDate[] | undefined;
+    itemId: number | undefined;
     creationTime: moment.Moment | undefined;
     isDeleted: boolean | undefined;
     uniqueId: string | undefined;
     id: number | undefined;
 }
 
+export class TransactionDate implements ITransactionDate {
+    transactionId: number | undefined;
+    date: moment.Moment | undefined;
+    type: number | undefined;
+    isDeleted: boolean | undefined;
+    creationTime: moment.Moment | undefined;
+    id: number | undefined;
+
+    constructor(data?: ITransactionDate) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.transactionId = data["transactionId"];
+            this.date = data["date"] ? moment(data["date"].toString()) : <any>undefined;
+            this.type = data["type"];
+            this.isDeleted = data["isDeleted"];
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): TransactionDate {
+        data = typeof data === 'object' ? data : {};
+        let result = new TransactionDate();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["transactionId"] = this.transactionId;
+        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        data["type"] = this.type;
+        data["isDeleted"] = this.isDeleted;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): TransactionDate {
+        const json = this.toJSON();
+        let result = new TransactionDate();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ITransactionDate {
+    transactionId: number | undefined;
+    date: moment.Moment | undefined;
+    type: number | undefined;
+    isDeleted: boolean | undefined;
+    creationTime: moment.Moment | undefined;
+    id: number | undefined;
+}
+
 export class CreateTransactionDto implements ICreateTransactionDto {
     itemPriceCode: string | undefined;
     description: string | undefined;
-    startTime: string | undefined;
-    endTime: string | undefined;
+    bufferDuration: number | undefined;
+    duration: number | undefined;
     price: number | undefined;
     state: number | undefined;
     itemPriceId: number | undefined;
     customerId: number | undefined;
     phoneNumber: string | undefined;
     customerName: string | undefined;
-    bufferTimePeriod: number | undefined;
+    isUnlimited: boolean | undefined;
+    durationStr: string | undefined;
 
     constructor(data?: ICreateTransactionDto) {
         if (data) {
@@ -6319,15 +6551,16 @@ export class CreateTransactionDto implements ICreateTransactionDto {
         if (data) {
             this.itemPriceCode = data["itemPriceCode"];
             this.description = data["description"];
-            this.startTime = data["startTime"];
-            this.endTime = data["endTime"];
+            this.bufferDuration = data["bufferDuration"];
+            this.duration = data["duration"];
             this.price = data["price"];
             this.state = data["state"];
             this.itemPriceId = data["itemPriceId"];
             this.customerId = data["customerId"];
             this.phoneNumber = data["phoneNumber"];
             this.customerName = data["customerName"];
-            this.bufferTimePeriod = data["bufferTimePeriod"];
+            this.isUnlimited = data["isUnlimited"];
+            this.durationStr = data["durationStr"];
         }
     }
 
@@ -6342,15 +6575,16 @@ export class CreateTransactionDto implements ICreateTransactionDto {
         data = typeof data === 'object' ? data : {};
         data["itemPriceCode"] = this.itemPriceCode;
         data["description"] = this.description;
-        data["startTime"] = this.startTime;
-        data["endTime"] = this.endTime;
+        data["bufferDuration"] = this.bufferDuration;
+        data["duration"] = this.duration;
         data["price"] = this.price;
         data["state"] = this.state;
         data["itemPriceId"] = this.itemPriceId;
         data["customerId"] = this.customerId;
         data["phoneNumber"] = this.phoneNumber;
         data["customerName"] = this.customerName;
-        data["bufferTimePeriod"] = this.bufferTimePeriod;
+        data["isUnlimited"] = this.isUnlimited;
+        data["durationStr"] = this.durationStr;
         return data; 
     }
 
@@ -6365,15 +6599,16 @@ export class CreateTransactionDto implements ICreateTransactionDto {
 export interface ICreateTransactionDto {
     itemPriceCode: string | undefined;
     description: string | undefined;
-    startTime: string | undefined;
-    endTime: string | undefined;
+    bufferDuration: number | undefined;
+    duration: number | undefined;
     price: number | undefined;
     state: number | undefined;
     itemPriceId: number | undefined;
     customerId: number | undefined;
     phoneNumber: string | undefined;
     customerName: string | undefined;
-    bufferTimePeriod: number | undefined;
+    isUnlimited: boolean | undefined;
+    durationStr: string | undefined;
 }
 
 export class PagedResultDtoOfTransactionDto implements IPagedResultDtoOfTransactionDto {
